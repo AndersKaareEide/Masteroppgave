@@ -1,0 +1,47 @@
+Original definition of $[G]\varphi$:
+\begin{align*}
+	&M,s\models[G]\varphi \textrm { iff for every set } \{\psi_i : i \in G\} \subseteq \textrm{ \lang{el}},~ \M,s \models \bigg[\bigwedge_{i\in G}K_i\psi_i\bigg]\varphi\\
+	&\Updownarrow\\
+&\M,s \models [G]\varphi \textrm{ iff not exists set} \{\psi_i: i\in G\} \subseteq \textrm{ \lang{el}},~ \M,s\not\models \bigg[\bigwedge_{i\in G}K_i\psi_i\bigg]\varphi\\
+\end{align*}
+
+Only way for $[\psi]\varphi$ to not be satisfied is for $\psi$ to be satisfied without $\varphi$ being satisfied after $\psi$ has been announced. In other words, if already $\M,s\not\models\varphi$, then we simply get $\M,s\models\bigg[\bigwedge_{i\in G}K_i\bot\bigg]\varphi$, which will always be true, as public announcements involving contradictions  \\
+
+How can $G$ make $\varphi$ untrue assuming $\M,s \models\varphi$? \\
+The valuation of $\varphi$ must be dependent on a structure of the form $\neg K_i\psi$\\
+$\Downarrow$\\
+$\neg K_i\psi$  is true because of states which do not satisfy $\psi$ and are reachable by $i$ from $s$\\
+$\Downarrow$\\
+In order to make $\M,s\not\models [G]\varphi$, $G$ must be able to remove states making $\neg K_i\psi$ true\\
+
+Example:
+
+\begin{figure}[h]
+	\centering
+	\scalebox{1.8}{
+		\begin{tikzpicture}[scale = 1.4, every label/.append style = {font=\tiny}]	
+				\node[label={[label distance=-0.7cm]:$p$}] (s1) at (0,0) {$\underline{s_1}$};
+				\node[label={[label distance=-0.7cm]:$\neg p$}] (s2) at (2,0) {$s_2$};
+	
+				\path[every node/.append style={font=\fontsize{10}{0}, fill=white, inner sep=2pt}] 
+					(s1) edge node {$a$} (s2);
+		\end{tikzpicture}
+	} %End scaling
+\end{figure}
+
+$\varphi = \neg K_ip$\\
+$\M,s_1 \not\models \varphi$ because $\{s1, s2\} \in \rels_a$\\
+$\Downarrow$\\
+$\M,s_1\not\models[G]\varphi$ iff $G$ is able to eliminate $s_2$ from $\M'$\\
+$\Downarrow$\\
+$\M,s_1\not\models[G]\varphi$ iff $\anns{G,(\M,s_1)}$ contains an extension not containing $s_2$\\\\
+
+Building on this:\\
+
+$M,s\not\models[G]\varphi$ iff: \\
+1: The valuation of $\varphi$ depends on a subformula of the form $\neg K_i\psi$. This means there exists some non-empty set $PS_{(s,\psi,i)}$ such that $\forall t\in PS_{(s,\psi,i)},~ t\rels_i s$ and $\M,t\not\models\psi$. In other words $PS{(s,\psi,i)}$  is the set of problematic states (PS) preventing $K_i\psi$ from being satisfied in $\M,s$.\\\\
+
+2: $\anns{G,(\M,s)}$ contains an extension $Ext$ such that $s\in Ext$ and $\forall t\in PS_{(s,\psi,i)}, ~t \not\in Ext$. If this is the case, then announcing $Ext$ will eliminate every $t$ causing $K_i\psi$ to not be satisfied from the updated model $\Rightarrow~\M,s|_{Ext}\models K_i\psi~\Rightarrow~\M,s|_{Ext}\not\models\varphi~\Rightarrow~\M,s\not\models[G]\varphi$\\\\
+
+Alternatively, if $s\in PS_{(s,\psi,i)}$, then $\M,s\models[G]\varphi$ trivially since that means $M,s\not\models\psi$. From this we then get that there cannot possibly exist any formula $\chi$ such that  $\M,s \models[\chi]K_i\psi$ since any model update that eliminates the actual state in our pointed model automatically satisfies any formula as the formula that was announced was not true in our pointed model to begin with and the only way for $\M,s\not\models[\chi]\varphi$ to be true is if $\M,s\models\chi$ and $\M,s|_\chi\not\models\varphi$. Since we already concluded that $\M,s\not\models\chi$, then $\M,s\models[\chi]\varphi$ and $\M,s\models[G]\varphi$.\\
+

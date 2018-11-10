@@ -1,0 +1,73 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[all]{xy}
+\usepackage{amsmath, amssymb}
+\usepackage{algorithm, algorithmicx, algpseudocode}
+\usepackage{stmaryrd}
+\usepackage{color}
+\usepackage{graphicx}
+\usepackage[utf8]{inputenc}
+\usepackage{hyperref}
+\usepackage{url} %Shouldn't be needed
+\usepackage{tikz}
+\usetikzlibrary{arrows, automata, positioning}
+%\usepackage[natbibapa]{apacite}
+
+%Settings
+\hypersetup{
+	colorlinks=false,
+	bookmarks=true,
+	linkcolor=blue
+}
+\graphicspath{{./Pics/}}
+\numberwithin{figure}{section}
+\bibliographystyle{plain}
+
+%\usepackage[rightcaption]{sidecap}
+%\usepackage{float}
+
+%Commands
+\newcommand{\todo}[1]{\textcolor{cyan}{(TODO: #1)}}
+\newcommand{\question}[1]{\textcolor{red}{(ASK TRULS: #1)}}
+\newcommand{\bisim}{\mathfrak{R}}
+
+%Commonly used variables
+\newcommand{\states}{S}
+\newcommand{\rels}{\sim}
+\newcommand{\ags}{A}
+\newcommand{\vals}{V}
+\newcommand{\props}{P}
+\newcommand{\model}[1]{$M#1 = (\states#1, \rels#1, \vals#1)$}
+\newcommand{\lang}[1]{$\mathcal{L}_{#1}$}
+\newcommand{\M}{\mathcal{M}}
+\newcommand{\dia}[1]{\langle#1\rangle}
+\newcommand{\eqc}[1]{\llbracket#1\rrbracket}
+\newcommand{\ext}[1]{||#1||}
+\newcommand{\labels}[1]{F_{#1}}
+\newcommand{\anns}[1]{\mathcal{A}_{#1}}
+\newcommand{\cname}{GALMC}
+
+%Enviroments
+\newtheorem{thm}{Theorem}[section]
+\newtheorem{cor}[thm]{Corollary}
+\newtheorem{lem}[thm]{Lemma}
+\newtheorem{conjecture}[thm]{Conjecture}
+\newtheorem{definition}[thm]{Definition} %Make definitions start on new line?
+\newtheorem{proposition}[thm]{Proposition}
+\newtheorem{example}[thm]{Example}
+\newtheorem{fig}{Figure}[section]
+
+
+\begin{document}
+
+\input{Frontpage} \newpage
+%\input{Preface} \newpage
+\input{Chapter_1_Introduction} \newpage
+\input{Chapter_2_Background} \newpage
+\input{Chapter_3_Theoretical_work} \newpage
+\input{Chapter_4_Implementation_and_results} \newpage
+\input{Chapter_5_Implementation} \newpage
+
+\bibliography{library}
+
+
+\end{document}	

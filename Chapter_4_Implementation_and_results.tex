@@ -1,0 +1,154 @@
+\section{Algorithms and pseudocode}\label{sec:algorithms}
+%Describe process of translating logical definitions into pseudocode here, then describe model checker in next chapter
+
+In this section we will describe the process of translating the definitions from the previous chapter into algorithms described through algorithms that will be used in our model checker. 
+
+%\todo{Finskrive alt det her, muligens stykke opp og fordele ut etterhvert som det blir relevant}\\
+%Before continuing into the translation of defintions into pseudocode, we want to highlight some key differences between the logical definitions of our models and the data structures used in our application. While models themselves are relatively similar, having a set of states and a set of agents, the equivalence relations for each agent and the valuation function for assessing which propositions are true in which states are somewhat different. Our model-structure in the application instead uses a set of edges, pairs of indistinguishable states and which agents consider them so. Secondly it also flips the valuation function in the sense that while the logical definitions define a function which goes from a proposition to the set of states said proposition holds in, our model checker instead goes from a state and returns the set of propositions that hold in that given state.\\
+
+Going back to our revised semantics behind the group announcement operators in Definition \ref{def:GALsemV2} we 
+can see that once we can determine how to enumerate the set of announceable extensions $\anns{G}$, implementing the semantics behind the group announcement operator is fairly straight forward. However, as $\anns{G}$ uses the concept of bisimulation contracted models, we will first need to cover how we can check whether states are bisimilar and then apply that check to models as a whole in order to constrain them to their smallest bisimilar structures. 
+
+%the definitions of bisimilar states and bisimulation contraction from  and Definition ??? \todo{Actually write definition of bisimulation contraction and refer to it here}. Starting with bisimilarity in general, we will be using the following algorithm for our implementation of bisimilarity checks.
+% Discuss basic components of models, states, edges later?
+% Skip over algorithms for basic operators
+
+% Repeat why we need bisimilarity check
+
+\subsection{Algorithm for bisimilarity check}
+
+Using the definition of bisimilarity in Definition \ref{def:bisim} we present our recursive function for checking bisimilarity between states. Given a set of states $States$, a set of agents $Agents$ and two states $s$ and $s'$ such that $s, s' \in States$, the function $rbc(s,s',States, Agents)$ determining whether $s$ and $s'$ are bisimilar is defined as Algorithm \ref{alg:rbc}. \todo{reword}
+
+\begin{algorithm}
+\caption{Recursive Bisimulation Check}
+\label{alg:rbc}
+\begin{algorithmic}[H]
+\Function{$rbc$}{$s,s',States,Agents$}
+	\If {$s = s'$}
+		\State\Return $true$
+	\ElsIf{$props(s) \ \neq \ props(s')$}
+		\State\Return $false$
+	\ElsIf{States = $\O$}
+		\State\Return $true$
+	\Else
+		\State $States' \gets States \setminus \{s,s'\}$
+		\State $forth \gets$ \Call{$knowledgeCheck$}{$s,s',States',Agents$}
+		\State $back \gets$ \Call{$knowledgeCheck$}{$s',s,States',Agents$}
+		\State \Return $(forth \ and \ back)$
+	\EndIf
+\EndFunction
+\end{algorithmic}
+\end{algorithm}
+
+The resulting algorithm is fairly similar to the logical definition, with the $props$ check being equivalent to the $atoms$ clause and the $knowledgeCheck$ function replacing the $forth$ and $back$ clauses. Note that our valuation function is flipped, going from a state to a set of propositions, rather than a proposition to a set of states. The pseudocode for the $knowledgeCheck$ function used to translate $forth$ and $back$ is shown in Algorithm \ref{alg:kc}
+
+\begin{algorithm}
+\caption{Knowledge Check}
+\label{alg:kc}
+\begin{algorithmic}
+\Function{$knowledgeCheck$}{$s,s',States,Agents$}
+	\ForAll{$(t, Ags) \ in \ Neighbours(s,Agents, States')$}
+		\ForAll{$a \ in \ Ags$}
+			\State $hasMatching \gets false$
+			\ForAll{$(t', Ags') \ in \ neighbours(s', Agents, States')$}
+				\If{$a \in Ags'$ and \Call{$rbc$}{$t,t',States',Agents$}}
+					\State $hasMatching \gets true$
+					\State $\mathbf{break}$
+				\EndIf
+			\EndFor
+			\If{!hasMatching}
+				\State\Return $false$
+			\EndIf
+		\EndFor	
+	\EndFor
+	\State \Return $true$ 
+\EndFunction
+\end{algorithmic}
+\end{algorithm}
+
+Comparing our algorithm to the original definition of bisimilarity the main point of interest is how it is finite, since for each recursive call to $rbc()$ we prevent the two current states from being checked again, meaning at some point the algorithm is guaranteed to halt. The function $neighbours()$ used in the $knowledgeCheck()$ function simply returns a set of tuples for each state visible from $s$ and the set of agents it is visible to, limited to states in $States$.
+
+\subsection{Smallest bisimilar structure}
+
+Building on the previous algorithm, the next step is using it to create an algorithm for constraining a model to one of its smallest bisimilar structures, by filtering out all bisimilar states. While we normally would not need to worry about which states are filtered, as we are generating a checking log to visualize the checking process for our users, we wanted to avoid having the `actual' state of our pointed model filtered out. As such, we simply make sure that the actual state lies first in our set of states when calling $bisimContract$ in our application. 
+
+\begin{algorithm}
+	\caption{Bisimulation contraction}
+	\label{alg:bisimContract}
+	\begin{algorithmic}
+		\Function{$bisimContract$}{$States, Agents, Edges$}
+			\State $bisimMap \gets Map<State, State>$
+			\ForAll{$(state) \ in \ States$}
+				\ForAll{$(otherState) \ in \ States \setminus (state \ \cup \ keys \  in \ bisimMap) $}
+					\If{\Call{$rbc$}{$state, otherState, States, Agents$}}
+						\State \Call{$bisimMap.put$} {$otherState, state$}
+					\EndIf
+				\EndFor
+			\EndFor
+			\State $CS \gets States \ \setminus \ (keys \ in \ bisimMap)$
+			\State $CE \gets \{ e \in Edges ~|~ startState(e) \not\in CS \ and \ endState(e) \not\in CS\}$
+			\State $contractedModel \gets (CS, Agents, CE)$
+			\State \Return $contractedModel$
+		\EndFunction
+	\end{algorithmic}
+\end{algorithm}
+
+\subsection{Enumerating the set of announceable extensions}
+
+As we have now laid the groundwork of formulating \todo{reword} how we can compute bisimulation contractions of models, we can move on to presenting how we can generate the set of announceable extensions. For this we will be using the definition of announceable extensions presented in Definition \ref{def:extscoal}. While Ågotnes et al.'s definition in \ref{def:GALsemAagotnes} is cleaner and more compact, our definition more closely resembles its  pseudocode translation.
+
+\begin{algorithm}
+	\caption{Generating a coalition's set of announceable extensions}
+	\label{alg:genAnnExts}
+	\begin{algorithmic}
+		\Function{$genAnnExts$}{$contractedModel, actState, coalition$}
+			\State $states \gets contractedModel.states$
+			\State $extensions \gets \wp(states)$
+			\ForAll {$extension ~ in ~ extensions$}
+				\If {$actState \not\in extension$}
+					\State remove $extension$ from $extensions$
+				\Else
+					\ForAll {$state$ in $extension$}
+						\State $eqClass \gets $\Call{$genEqClass$}{$state, states, coalition$}
+						\ForAll {$eqstate$ in $eqClass$}
+							\If {$eqstate \not\in extension$}
+								\State remove $extension$ from $extensions$
+								\State $\mathbf{break}$
+							\EndIf
+						\EndFor
+					\EndFor
+				\EndIf				
+			\EndFor
+			\State \Return $extensions$
+		\EndFunction
+	\end{algorithmic}
+\end{algorithm}
+
+As can be seen, the algorithm for generating the set of announceable extensions is pretty much just generating the power set of states in the model, i.e. the set of all possible extensions, and then filtering it according to the rules in Definition \ref{def:extRules}. The $genEqClass(state, agents)$ function used is mostly identical to the $neighbours()$ function used previously, except it returns the list of states that the coalition as a whole considers indistinguishable from the input state. 
+
+Now that we have not only our bisimulation contracted model, but also a way to generate all of the announceable formula extensions for any coalition, describing the algorithm for checking whether a group announcement formula is satisfied or not becomes entirely trivial. As these extensions are really just stand-ins for some announcement made by the agents as per the original definition in Definition \ref{def:GALsem}, we can also regard them as constraints on our model. Going by our revised definition of the semantics behind the group announcement operator from definition \ref{def:GALsemV2}, all our algorithm needs to do is to check whether all of the constrained models we get from applying these constraints to our bisimulation contracted model satisfy the inner formula \question{Hva kaller man den 'bakre' formelen i et announcement?} of the group announcement. As such, we translated the semantics of the group announcement operator into the following checking function, shown in Algorithm \ref{alg:checkGroupAnn}.
+
+%Discuss optimizations in regards to non-epistemic formulas not changing valuation through announcements\\
+\todo{Remove filterMapping and all discussion of it}
+\begin{algorithm}
+	\caption{Check function for group announcement operator}
+	\label{alg:checkGroupAnn}
+	\begin{algorithmic}	
+		\Function{$check$}{$state, innerForm, model, coalition$}
+		\State $contractedModel \gets$ \Call{$bisimContract$}{$model$}
+		\State $extensions \gets $\Call{$genAnnExts$}{$contractedModel, state, coalition$}
+		\ForAll {$extension$ in $extensions$}
+			\State $constMdl \gets$ \Call{$constrainMdlBy$}{$contractedModel, extension$}
+			\State $extSatisfiesForm \gets $ \Call{$check$}{$state, innerForm, constMdl, coalition$}
+			\If{$!extSatisfiesForm$}
+				\State \Return $false$
+			\EndIf
+		\EndFor
+		\State \Return $true$
+		\EndFunction
+	\end{algorithmic}
+\end{algorithm}
+
+Like we previously mentioned we here make sure the set of states passed to $bisimContract$ starts with the actual state we're checking our formula in, in order to simplify the visualization of our checking process. It should also be mentioned that the $check$ function that gets called is implemented as an abstract function overridden by each operator in our system and that Algorithm \ref{alg:checkGroupAnn} only shows the implementation for the group announcement operator. The $constrainMdlBy$ function used here is merely a special case of updating a model through announcing the set of states directly instead of announcing a formula and constraining our model to the set of states that satisfy the given formula. 
+%Not just after enumerating the set of extensions, regard them as constraints on our model
+%Generate all possible such constrained models

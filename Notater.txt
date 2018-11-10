@@ -1,0 +1,6 @@
+Finnes det en formel som kan unikt identifisere en gitt tilstand s?
+
+Unikt identifisere -> Formel som kun er sann i en spesifikk tilstand
+
+
+Finnes det en formel som kan unikt identifisere e

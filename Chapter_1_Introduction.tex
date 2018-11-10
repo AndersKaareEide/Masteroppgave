@@ -1,0 +1,62 @@
+\section{Introduction}\label{sec:intro}
+
+
+\subsection*{Abstract}
+
+In this paper we will present a graphical model checking tool for group announcement logic called \cname, capable of visualizing the process of checking formulas in a step-by-step fashion. We will define how to enumerate the set of ways a given coalition can restrict a model as well as present pseudocode algorithms describing how we have translated our definitions in our model checker. 
+
+
+\subsection{Motivation}
+
+\question{Greit med førsteperson i motivasjon?}\\
+\todo{Skriv om hele introduksjonen av GAL}\\
+\todo{Hente ned bilder av JFLAP i aksjon, med illustrasjoner av hvordan verktøyet og stepperen i det fungerer}\\
+
+%Research questions
+
+%Can we create a model checking tool for GAL
+%That can enumerate the set of announceable extensions for a given coalition
+%And also visually present the process of checking formulas
+
+
+%JFLAP: 
+%Started as a set of tools at Rensselaer Polytechnic Institute around 1990, moved to Duke University in 1994
+%The creators of JFLAP describe it as "a package of graphical tools which can be used as an aid in learning the basic concepts of Formal Languages and Automata Theory."
+%JFLAP introduces the concept of turing machines which can be rather abstract for a fledgeling student to grasp
+
+
+%Symbolic Model Checking
+%SMCDEL, symbolic model checker for dynamic epistemic logic including a variant of group announcements
+%
+
+\todo{Write sub-section on inspiration for tool about JFLAP, educational benefits ect}
+
+%While measuring the educational benefit of our tool is beyond the scope of this thesis, we at least hope to put a tool out there so that others can use it in their courses and potentially leading to more papers on the topic in the future.
+\question{Footnotes i en masteroppgave? Lenke til nettsiden for JFLAP}
+
+In 2010, Ågotnes et al. submitted a paper on their extension of Public Announcement Logic called Group Announcement Logic \cite{Agotnes2010}. Having previously used other visual tools such as JFLAP\footnote{Available from: \url{http://www.jflap.org/}} to aid student learning while teaching courses and seeing how helpful it can be to visualize the way something works, I wanted to create something similar that could aid students in learning how group announcement logic works. Looking at other branches of logic such as Computational Tree Logic it is also clear that the field of model checking epistemic logics such as GAL lags far behind. While there does exist model checkers for similar kinds of logic such as DEMO\footnote{Haskell source files and user guides available from: \url{https://homepages.cwi.nl/~jve/software/demo_s5/}} for Public Announcement Logic, in my opinion DEMO would not lend itself very well to teaching as it requires the user to structure their models as plain sets of numbers and letters through the command line rather than let them see and build their models in a more easily understood manner. As such we not only wanted to make a model checker that supports group announcement logic, but also make it useful in an educational context, by making able to present how the various operators in the language work in a more visual manner. There is also an interesting theoretical challenge involved in model checking GAL, as the semantics behind the logic's group announcement operator involve quantifying over an infinite set of formulas that a given coalition can announce. To this end, we will come up with an algorithm for enumerating this infinite set of formulas by exploring the properties of minimal bisimilar structures and grouping these formulas by which states in our structures they are satisfied in. 
+
+
+%In 2010, Ågotnes et al. submitted a paper on their extension of Public Announcement Logic called Group Announcement Logic\cite{Agotnes2010}. This extension has an operator for evaluating the ability of a coalition of agents to share knowledge with other agents. The way it does this is by checking if there exists a set of formulas the coalition can announce such that the original formula becomes satisfied. 
+
+\todo{Nevne modellsjekker og læringsfordeler ved visualisering}\\
+\todo{Nevne APAL vs GAL, ulike måter å løse lignende 'problem', APAL tar ikke hensyn til agentenes kunnskap}\\
+\todo{Nevne interessante egenskaper ved GAL, de re/de dicto}\\
+
+\subsection{Structure}
+
+This paper is divided into the following sections: \\
+
+A background section containing background information regarding the field of dynamic epistemic logic and Group Announcement Logic as well as a lot of the various definitions that will be used in the following sections. \\
+
+A section containing the theoretical work presented in this paper, where we discuss the semantics of group announcement logic and will explore their definitions in order to find definitions that are more easily translatable into algorithms we can use in our model checker.
+
+A section where we translate these definitions into algorithms presented through pseudocode and explain and discuss any differences from the logical definitions.
+
+And finally a section where we present and discuss our implementation of these algorithms and the working software they are implemented in.
+
+\todo{
+\\* Discuss different approaches towards coalitional ability in dynamic epistemic logic, mention coalitional logics like ATL?
+\\* Discuss educational benefits from usage of model checker, visualization of semantics behind operators
+\\* Discuss scope of implementation, not suitable for research work, but potentially useful in educational setting
+}

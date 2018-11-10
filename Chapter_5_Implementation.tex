@@ -1,0 +1,126 @@
+%Test formulas for Muddy Children:
+%[ma|(mb|mc)][(!KA(ma))&((!KB(mb))&(!KC(mc)))]KB(mb)
+%
+
+\section{Implementation}\label{sec:impl}
+
+\todo{Mention inspiration from JFLAP and experience with using it as educational tool}
+%JFLAP, a tool previously used here at our faculty to teach students how turing machines and finite state automatas work.
+
+
+In this chapter we will present our own implementation of a model checker for Group Announcement Logic called \cname and describe its inner workings. Our initial goal with \cname was to create an educational tool that could aid students with learning epistemic logic in a more visual manner by letting the user draw models almost as they would on paper or blackboard. The reasoning behind this was that by allowing the user to manipulate the model through a simple click-and-drag interface and seeing how it can affect the valuation of various formulas they might gain a deeper understanding of the semantics involved.
+
+They would additionally be able to type in a formula and then have the states in their model light up, highlighting which states satisfy the given formula. Another key feature of the application is that in addition to simply checking which states in the user's model, they can also look more closely at why a formula is or is not satisfied in a given state. In order to help the user with this, the application visualizes the checking process step-by-step, one operator and state at a time, with progress being displayed by updating the color of each operator in the formula according to their current valuation.
+
+\begin{figure}[h]
+	\label{fig:debugExmpl}
+	\caption{Example of using \cname's step-by-step formula checking}
+	\includegraphics[width=\textwidth]{DebuggerExample.png}
+\end{figure}
+
+%Admittedly UX and design in general is not my strong suit and improving the interface is left as future work
+
+Figure \ref{fig:debugExmpl} shows a screenshot of \cname in action, where the user is stepping through the process of checking a specific formula against a state in their model and seeing why their formula is or is not satisfied. It also shows how the application breaks down epistemic formulas into sub-formulas and display them next to each state they have to be checked in. Additionally, the application also visualizes the current valuation of each operator and proposition in the formula as you step through the checking process, as can be seen from the red and green parts of the formulas being checked, as well as the Val column in the debugger tab. Note that the user can also step forwards or backwards through this process at any time by either clicking the step they want to skip to, or browsing with the arrow keys. 
+
+\subsection{Tech choices}
+
+Our model checker was implemented in Kotlin as it is a new and exiting language while also being based on the JVM, providing access to the wast libraries and tools written for Java, including JavaFX and a Java hook for ANTLR which will be discussed in more detail later in this section. Kotlin additionally has a smooth and concise syntax as well as lending itself very well towards writing functional code despite being object oriented through shorthands for lambda expressions, support for proper function types and distinctions between mutable and immutable structures and variables. Among the other benefits of the language is that Kotlin being a relatively fresh and recent language, is that it has been able to draw plenty of inspiration from other  meaning it also has lots of lovely `modern' language features such as type inference, string interpolation and default values for making function arguments optional, meaning you no longer have to write three different constructors as one would in good old Java. While the language is still relatively young, being first unveiled in 2011\cite{KotlinHello}, it is being backed by Jetbrains, who are well known for their suite of plugins and IDEs such as IntelliJ and PyCharm, meaning the language has excellent tooling support despite its age.
+
+As for the choice of graphics library to build the application's user interface in, the choice fell on a Kotlin wrapper for the de facto standard Java GUI library of JavaFX, called TornadoFX\footnote{Library homepage at: \url{https://tornadofx.io}}. While JavaFX is a widely used and mature library with powerful features, we also feels it tends to be somewhat clunky and verbose unless one dumps the layout and positioning of components into specialized XML-files. While this helps clean up classes representing UI-components, we also find it makes dynamic component generation somewhat clumsier. Our reasons for wanting to use TornadoFX over plain JavaFX is that TornadoFX, being a Kotlin library is able to have a much cleaner and prettier API by utilizing Kotlin features such as lambda expressions attached to receivers to create composable builder functions which generate your JavaFX component hierarchy in an imperative fashion. Another excellent feature of TornadoFX is its concise shorthands for creating dynamic bindings between UI components and observable sets of data. An example of this would be me using the standard bindChildren() function to dynamically create and destroy UI components representing states in the user's epistemic model based on changes to that internal list of objects which represent states in a single line of code, by simply feeding the bindChildren() function a reference to the observable list of states and a transformation function that converts the data structure representing a state, to the corresponding UI component, in my case simply the constructor of this component. If anything, I would say that TornadoFX's greatest feature is how its composable builder functions allows you to circumvent the normally inverse order of declaration and creation of UI components compared to their order in the component hierarchy, which can be seen in Figure \ref{fig:StatFragSnip}. \todo{Find out why Latex is fucking up this reference}
+
+\begin{figure}[h]
+	\label{fig:StatFragSnip}
+	\caption{Code handling how the UI components representing states are built. Note the conciseness due to 		implicit contexts.}
+	\includegraphics[width=\textwidth]{StateFragmentSnippet.png}
+\end{figure}
+
+As for parsing the formulas, I went with ANTLR\footnote{\url{http://www.antlr.org/}} for generating the parsers I needed. ANTLR is a pretty powerful tool for generating parsers and lexers based on easily definable grammatical rules like the ones in Figure \ref{fig:grammar}
+
+\begin{figure}[h]
+	\label{fig:grammar}
+	\caption{Grammatical rules for parsing formulas in \cname with ANTLR. }
+	\includegraphics[width = \textwidth]{GALGrammar.png}
+\end{figure}
+
+These grammatical rules are used by ANTLR to generate parser and lexer classes which implement these rules in a manner that allow me to easily translate from raw text and lexical tokens into data structures of my own design which represent the various operators and encapsulate their semantics. One thing to note in Figure \ref{fig:grammar} are the signs used to represent negation, conjunction and disjunction. As the commonly used symbols for these operators do not exist on normal keyboards, the UI would either need extra buttons to facilitate inserting these symbols or use more easily inputable surrogate symbols. I chose the latter, going for the boolean equivalents of using exclamation marks for negations, not, ampersand for conjunctions, and, as well as the vertical bar, or `pipe' character commonly representing the or operator. Note that \cname automatically converts these characters to their `correct' symbols when displaying the input formula however, as can be seen in figure \ref{fig:debugExmpl}. 
+Another small concession I had to make in order to differentiate between agents and propositions was to force agent names to be capitalized as I would otherwise have to resort to using different symbols to differentiate between regular public announcements and group announcements. Due to time constraints, the dual diamond announcement operators were not implemented, but both the grammar as well as the formula structures should be easily extendable in order to implement them as future work.
+
+\subsection{Implementation details}
+
+As the focus when making the application was mainly on making the it as easy to use as possible while presenting information in a visual manner that is easy to grasp, we ended up making several deviations from the logical definitions of the various structures that have been discussed throughout the thesis. Here we will discuss some of them as well as why these deviations were useful to us. A key difference here is how we chose to represent the components of our epistemic models themselves.  In Definition \ref{def:model} we present $\rels$ as a function from each agent to their respective equivalence relation for every state in the model, whereas in \cname we instead chose to represent these equivalence relations as a set of edges represented as objects consisting of pairs of states and sets of agents. The reasons for this ties back into how we wanted to present an interactive view of the models in our application as it felt cleaner represent each edge between states as a concrete objects which we could then bind a UI-component to, than hold onto sets of sets of states for each agent. Since each edge also has a reference to the set of agents it is valid for, it becomes trivial to visualize this information as well.
+
+We also chose to flip the valuation function by letting states hold a reference to the set of propositions they satisfy rather than each proposition being linked to the set of states they are satisfied in. Our reasoning here is much the same as we highlight which propositions are true in which states through bindings to each state's set of propositions, which is far simpler than having to go through the entire set of propositions each time the user updates which propositions a given state satisfies. An example of how this looks can be seen in Figure \ref{fig:basicModelVis}, with both states and the edge between them being just bindings to simple data structures and updating whenever their underlying data does.
+
+\begin{figure}[H]
+	\label{fig:basicModelVis}
+	\caption{A basic model, visualized in \cname}
+	\includegraphics[width= \textwidth]{BasicModel.png}
+\end{figure} 
+
+Additionally, we also made each state aware of which edges it is connected to, trivializing the logic behind finding `neighboring' states for a given agent as we simply filter the set of edges our state is connected to based on each edge being valid for said agent and return a list of states these edges lead to.
+
+Continuing our discussion of how we implemented our formula structures in \cname, we use a text parser generated from a small ANTLR grammar file in order to parse formulas entered by the user into a tree-like structure representing their formula. When checking this formula the user then has a choice of whether they simply want to see which states in the model satisfy their formula, or whether they want a more detailed visualization of why their formula is or is not satisfied in a specific state. If the user then opts for the first option and check their formula against the whole model, then the tool will highlight the states as either green or red, depending on whether that state satisfies the input formula. The tool also generates an interactive visual representation of the formula where the user can mouse over each operator to check the sub-formula that operator represents against the model as seen in Figure \ref{fig:labelHover}. The idea behind this being that the user might be interested in quickly seeing which states in their model satisfy the various sub-formulas to help better understand how the original operator works. The way this was implemented was to basically create UI components for each operator in the formula and the sub-formula they represent and then check each sub-formula against the model as the user mouses over them, highlighting which part of the formula they represent.
+
+\begin{figure}[H]
+	\label{fig:labelHover}
+	\caption{Illustration of interactive formula display}
+	\includegraphics[width= \textwidth]{LabelMouseOver.png}
+\end{figure}
+
+How step-by-step visualization works is somewhat more involved. A high-level description of how it is implemented is that the `debugger' hooks into the $check$ function of the formula, and logs each step of the checking process. Each log then carries information about what the valuations of each operator was at that point in the process, so that this checking process can be played back and visualized in the form of showing the various operators change color as their valuations become known. One pretty cool feature of this step-by-step visualization is that it allows the user to see which states get filtered out by model updates and even see the checking process play out in each formula extension a given coalition can announce in the case of checking group announcement formulas. There were also plans for separately visualizing the set of announcements a coalition can make as well as showing what the updated models would look like, but unfortunately this had to be scrapped due to time constraints.
+
+\begin{figure}[H]
+	\label{fig:formulaImpl}
+	\caption{Snippet showing how various operators are implemented}
+	\includegraphics[width=\textwidth]{FormulaImpl.png}
+\end{figure}
+
+%Features - should explain how each of these are implemented \\\\
+
+%Simple click-and-drag interface for creating models\\
+%Reinventing the wheel in terms of click-and-drag\\
+%Saving and loading models, as well as importing other models into the current model (Useful for importing commonly used components)\\
+%Visualizing which states satisfy a given formula, and being able to mouse over sub-formulas to check them as well\\
+%When using the step-by-step visualizer, the user can skip over sub-formulas as the application keeps track of operator depth\\
+
+\todo{Create UML diagram of data structures and how they are connected}
+
+%Models - $M = \{states, agents, edges, props)\}$\\
+
+%States - 'Know about' edges they are connected to, 'know' which propositions they satisfy in order to ditch hassle of valuation function (Instead of $V(p) \rightarrow \{s\}, V(s) \rightarrow \{p\}$)\\
+
+%Edges - Are actual objects rather than part of some equivalence relation, easier to deal with, more direct in terms of knowing what to render and interact with (Also in terms of traversing, knowing which states to interact with without having to go through a bunch of sets, i.e equivalence relations)). 'Know about' which agents they represent and which states they are between\\
+
+%Formulas - \\
+
+%Compare with implementations in DEMO, advantages/disadvantages of wrapping things in objects ect.\\
+%We use observable objects with pointers to each other, DEMO simply has arrays of integers, which are more lightweight and potentially easier to manipulate, but much harder to render \\
+%Discuss differences with logical definitions\\
+%Provide walkthrough of how program checks formulas\\
+
+%Debugger, DebugLabels, attaching itself to checking process of formulas, lots of shady voodoo to link DebugEntries in sidepanel to DebugLabels next to each state in order to update them as the user navigates through entries\\
+
+%Debugger inserts callback into CanvasController to know when the user selects a state\\
+%List of checking steps has onChange() callback telling the Debugger to apply the valuation map for that step to all formula labels\\
+
+%Checking: Everything up to knowledge is roughly equivalent to logical definitions, minus flipped valuation function. Knowledge is similar, but instead of having an equivalence relation for each agent, each state is instead connected to other states through a set of edges which hold for a set of agents. If 
+
+
+%Checking, recursive, 'logger' used to display process step-by-step\\
+
+\subsection{Future work}
+
+\todo{Skrive om å måle pedagogisk verdi, muligens peke ut som fremtidlig masteroppgave}
+
+Having developed what we consider to be a potentially highly useful education tool, the big elephant in the room when discussing future work is actually measuring its educational benefit. As both user testing and educational impact studies go beyond the scope of this thesis, we certainly hope that someone might be willing to take up the torch and prove the value of \cname in such settings. While \cname is fully functional and usable as an educational aid in its current state, there are also a fair few features that we simply did not have time to implement, a few of which we will discuss.
+
+One of the simpler additions to the tool is implementing the dual, also known as `diamond' version of the announcement operators. As these operators do not add any additional expressiveness or capabilities to the model checker they were never prioritized as they can always be expressed through the negation of the box operators. It would still be nice to have support for these operators directly however, to cut down on formula length and complexity when visualizing larger formulas. As both the ANTLR grammar and related formula components are easily extendable, implementing these operators would be fairly trivial as their underlying semantics are basically already implemented.
+
+There are also a fair few additions to the UI we would have liked to implement, such as separately displaying the set of formula extensions a coalition can announce or provide the user with more informative error messages when attempting to parse syntactically incorrect formulas. Visualizing these formula extensions should also not prove all too challenging as the extensions are already generated when checking formulas. Similarly, the ANTLR parsers provide most of the context necessary to present inform the user of which part of their string caused an error, although more complex reasoning around how to parse ambiguous structures in regards to how to handle missing parentheses and the like might be more challenging. 
+
+\todo{Fix apostrophe positioning somehow}\\
+
+There were also plans for generalizing \cname{}'s  model serializer in order for to be able to export the models as formats beyond its current basic binary format such as GEXF\footnote{\url{https://gephi.org/gexf/format/}} in order to be able to view these models in other tools such as Gephi\footnote{\url{https://gephi.org/}}. As the intended users of the tool are mainly students attempting to gain a better understanding of the semantics of the operators and structures in group announcement logic however, the feature was eventually scrapped as the models created would likely not be all that interesting to visualize in external tools anyway and the work involved would be fairly substantial for a feature that would probably go unused by most users.  Continuing on model serialization, we would also have liked to be able to store additional information or metadata about each model, such as being able to write notes about interesting properties a model might have or formulas that highlight said properties when checked against these models. 
+
+
+

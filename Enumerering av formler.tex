@@ -1,0 +1,25 @@
+\documentclass[11pt,a4paper,twosided]{article}
+\usepackage[all]{xy}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage[rightcaption]{sidecap}
+\usepackage{float}
+\usepackage{stmaryrd}
+\usepackage{eufrak}
+\graphicspath{ {img/} }
+\begin{document}f
+
+\textbf{Enumerering av formler}\\\\
+$CS$ = Contracted States, or the bisimulation contraction of States. The original set of states where all bisimilar states have been filtered out such that \\
+$CS = States - [s \ |\ \mathfrak{R}(s,s'), \forall s,s' \in States]$ \\
+\\
+\begin{math}
+(1) \ \ \forall CS \subseteq States, \ \exists\varphi_{CS}, \text{ s.t. } \forall s \in States, \ M,s \models \varphi_{CS} \text{ iff } s \in CS \\
+(2) \ \ \forall CS \subseteq States, \text{ if } \llbracket s \rrbracket _a \subseteq CS, \ M,s \models K_a\varphi_{CS} \\
+(3) \ \ J_{a,s} = [CS\ | \ \llbracket s \rrbracket _a \subseteq CS] \\
+\end{math}
+
+
+
+\end{document}f

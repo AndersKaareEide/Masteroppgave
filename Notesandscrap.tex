@@ -1,0 +1,14 @@
+
+%Old psudocode for bisimilaritycheck
+1. \indent $s = s' \Rightarrow \top$ \\
+2.	\indent $V(s) \neq V(s') \Rightarrow \bot$ \\
+3.	\indent $States = \varnothing \Rightarrow \top$ \\
+4. \indent $States' = States - \{s, s'\}$ \\
+5a. \indent $all \ a \in Agents $ \\
+5b. \indent\indent $all \ t \in Neighbours(s,a) \cap States'$ \\
+5c. \indent\indent\indent $any \ t' \in Neighbours(s',a) \cap States'$ \\
+	  \indent\indent\indent\indent  such that $rbc(s, s', States')$ \\
+5d.  \indent\indent $all \ t' \in Neighbours(s',a) \cap States'$ \\
+5e.  \indent\indent\indent $any \ t \in Neighbours(s,a) \cap States'$ \\
+       \indent\indent\indent\indent such that $rbc(t, t', states')$ \\
+\\
