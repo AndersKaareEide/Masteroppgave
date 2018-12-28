@@ -1,7 +1,6 @@
 \section{Background}\label{sec:back}
 
-In this chapter we will give the reader some insight into the state of 
-introduce the various concepts and terms that will be used later on in this thesis, as well as give the reader some insight into the background of these systems of logic.
+In this chapter we will give the reader some insight into the background of these systems of logic while determining the state of the art, before introducing various concepts and terms that will be used later on in this thesis.
 
 \todo{Reword in order to fit model checker discussion}
 
@@ -58,9 +57,9 @@ We will introduce a model checking tool
 \subsection{Notation and basic concepts}
 
 \todo{Fix intro}
-The logic this thesis will be working with, group announcement logic, is also one of these extensions of epistemic logic, but in addition to reasoning around information change also allows us to reason around what coalitions of agents are able to achieve through making public announcements in unison based on how they can change the information available to other agents in the system. Group announcement logic, like many other forms of epistemic logic revolve around the notion of so-called `possible worlds' and agents which may or may not be able to distinguish between them. When working with these possible worlds, we usually refer to them as states in some system we are trying to simulate. We describe which agents are able to distinguish between these states based on an accessibility relation for each agent, consisting of pairs of states they are unable to differentiate. Since we are solely working with epistemic models in this thesis, also known as S5 models, these accessibility relations will also be equivalence relations, and we will from here on also refer to them as such.
+The logic this thesis will be working with, group announcement logic, is also one of these extensions of epistemic logic, but in addition to reasoning around information change also allows us to reason around what coalitions of agents are able to achieve through making public announcements in unison based on how they can change the information available to other agents in the system. Group announcement logic, like many other forms of epistemic logic revolve around the notion of so-called `possible worlds' and agents which may or may not be able to distinguish between them. When working with these possible worlds, we usually refer to them as states in some system we are trying to simulate. We describe which agents are able to distinguish between these states based on an accessibility relation for each agent, consisting of pairs of states they are unable to differentiate. Since we are solely working with epistemic models in this thesis, also known as S5 models, these accessibility relations will also be equivalence relations (meaning they are reflexive, symmetric and transitive), and we will from here on also refer to them as such.
 
-These simulations are then grouped into models consisting of a set of possible worlds, states, a set of equivalence relations, one for each agent we wish to model, as well as a set of propositions which may or may not hold in a given state. 
+These simulations are then grouped into models consisting of a set of possible worlds or states, a set of equivalence relations for each agent we wish to model, as well as a set of boolean propositions which may or may not hold in a given state. 
 
 Throughout the rest of this thesis, we will refer to the previous by the following definition: 
 \begin{definition}[Models]\label{def:model}
@@ -72,7 +71,10 @@ Throughout the rest of this thesis, we will refer to the previous by the followi
 	\end{itemize}
 \end{definition}
 
-We will also frequently use $\rels$ as $s\rels_a t$, where $a\in\ags$ to signal that agent $a$ is unable to distinguish between states $s$ and $t$. When we wish to highlight specific states in a model we will denote this by writing $(M,s)$ to specify that we are referring to state $s$ in the model $M$, commonly known as a pointed model. This is the form that we will use when we are discussing the properties of a state $s$ in the context of some model $M$. A simple practical example of an epistemic model could be us imagining someone that doesn't know whether or not it is raining outside. If we focus solely on whether or not it is in fact raining outside, we might denote this proposition as $p$, where $p = $``It is raining outside". Since this agent, $a$ does not know whether it is raining, this means that in their mind there must be at least two possible worlds, or states; one where $p$ is true, and one where $p$ is false and that $a$ is unable to tell these two states apart. If we label these states as $s_0$ and $s_1$, we end up with the following model shown in Figure \ref{fig:basicEM}, where we use $\neg p$ to signify that $p$ is not true in $(M,s_1)$
+We will also frequently use $\rels$ as $s\rels_a t$, where $a\in\ags$ to signal that agent $a$ is unable to distinguish between states $s$ and $t$. When we wish to highlight specific states in a model we will denote this by writing $(M,s)$ to specify that we are referring to state $s$ in the model $M$, commonly known as a pointed model. This is the form that we will use when we are discussing the properties of a state $s$ in the context of some model $M$. 
+
+A simple practical example of an epistemic model could be us imagining someone that doesn't know whether or not it is raining outside. If we focus solely on whether or not it is in fact raining outside, we might denote this proposition as $p$, where $p = $``It is raining outside". Since this agent, $a$ does not know whether it is raining, this means that in their mind there must be at least two possible worlds, or states; one where $p$ is true, and one where $p$ is false and that $a$ is unable to tell these two states apart. If we label these states as $s_0$ and $s_1$, we end up with the following model shown in Figure \ref{fig:basicEM}, where we use $\neg p$ to signify that $p$ is not true in $(M,s_1)$
+\todo{Fix this reference so it points to the correct figure}
 
 \begin{figure}[h]
 	\label{fig:basicEM}
@@ -124,20 +126,20 @@ Definition \ref{def:GAL} defines the language of \lang{GAL} or more specifically
 
 Starting with the most basic component of our formulas we have propositions, commonly referred to as atoms or atomic formulas as propositions themselves are also formulas. If we want to check if some pointed model $\M,s \models p$ or satisfies some property $p$, then as we can see in Definition \ref{def:GALsem} we do this by seeing if the state $s$ is an element in the set of states where $p$ is true, more formally if $s \in \vals(p)$. 
 
-For the explanation of our operators we will be using $\varphi$ and $\psi$ to represent arbitrary formulas. Negation, $\neg$ is relatively trivial, with $\neg\varphi$ simply meaning the negation of $\varphi$ and that $\M,s \models \neg\varphi$ if, and only if $\M,s \not\models\varphi$. Conjunction and disjunction, $\wedge$ and $\vee$ are also pretty trivial, translating to `and' and `inclusive or', as can be seen from their definitions in Definition \ref{def:GALsem}. Implication, $\rightarrow$ can also be somewhat loosely translated to `if $a$, then $b$', except if $a$ doesn't hold, then the implication automatically holds regardless of $b$. More specifically, the only time an implication is false is when $a$ is true and $b$ is false. We will also use $\varphi \leftrightarrow \psi$, to denote biimplications, meaning $(\varphi \rightarrow \psi) \wedge (\psi \rightarrow \varphi)$ throughout this thesis. 
+For the explanation of our operators we will be using $\varphi$ and $\psi$ to represent arbitrary formulas. Negation, $\neg$ is relatively trivial, with $\neg\varphi$ simply meaning the negation of $\varphi$ and that $\M,s \models \neg\varphi$ if, and only if $\M,s \not\models\varphi$. Conjunction and disjunction, $\wedge$ and $\vee$ are also pretty simple, translating to `and' and `inclusive or', as can be seen from their definitions in Definition \ref{def:GALsem}. Implication, $\rightarrow$ can be somewhat loosely translated to `if $a$, then $b$', except if $a$ doesn't hold, then the implication automatically holds regardless of $b$. More specifically, the only time an implication is false is when $a$ is true and $b$ is false. We will also use $\varphi \leftrightarrow \psi$, to denote biimplications, meaning $(\varphi \rightarrow \psi) \wedge (\psi \rightarrow \varphi)$ throughout this thesis. 
 
-The previous operators are all relatively basic and only express properties regarding the structures they are checked against, the remaining operators in our language are somewhat more interesting to us, as they also express properties regarding the knowledge of the agents in our systems shifting us towards epistemic logic. The $K_i$ operator is the first of these, with $\M ,s \models K_ap$ expressing that in our pointed model agent $a$ knows that the proposition $p$ is true. Verifying that this is the case however is where things get interesting, as the previous operators only express properties regarding single states, their scope is also limited to that single state, whereas the $K_i$ operator also requires us to check all the states that this agent is incapable of distinguishing from the current state. In order to check if $\M,s \models K_a\varphi$, we need to ascertain that all states a is unable to distinguish from s also satisfy $\varphi$. More specifically, that for all states $t\rels_as$, that $\M,t \models\varphi$. This is because if there exists any such state that does not satisfy $\varphi$, then agent $a$ considers it possible that $\varphi$ is not satisfied since they cannot tell if $t$ or $s$ is the actual state they are in.
+The previous operators are all relatively basic and only express properties regarding the structures they are checked against, the remaining operators in our language are more interesting, as they also express properties regarding the knowledge of the agents in our systems shifting us towards epistemic logic. The $K_i$ operator is the first of these, with $\M ,s \models K_ap$ expressing that in our pointed model agent $a$ knows that the proposition $p$ is true. Verifying that this is the case however is where things get interesting, as the previous operators only express properties regarding single states, their scope is also limited to that single state, whereas the $K_i$ operator also requires us to check all the states that this agent is incapable of distinguishing from the current state. In order to check if $\M,s \models K_a\varphi$, we need to ascertain that all states a is unable to distinguish from s also satisfy $\varphi$. More specifically, that for all states $t\rels_as$, that $\M,t \models\varphi$. This is because if there exists any such state that does not satisfy $\varphi$, then agent $a$ considers it possible that $\varphi$ is not satisfied since they cannot tell if $t$ or $s$ is the actual state they are in.
 
 While the $K_i$ operator lets us reason around the knowledge of our agents, the public announcement operator $[\varphi]\psi$ lets us update it, or at least add to it by informing the agents through a truthful announcement that some formula is true in the `current' state as defined by the pointed model we are checking the announcement in.
-In Definition \ref{def:GALsem} we use the notation $\M|\varphi,s$ to denote $\M$ `updated' by $\varphi$ meaning $\M$ minus all states which do not satisfy $\varphi$.
+In Definition \ref{def:GALsem} we use the notation $\M|\varphi,s$ to denote $\M$ `updated' by $\varphi$, meaning $\M$ minus all states which do not satisfy $\varphi$.
 
 \begin{definition}[Model Updates]
 	\label{def:modupdate}
 	$\M$ updated by $\varphi$ is defined as the following: $\M|_\varphi = \langle\states',\rels',\vals'\rangle$ where 
 	\begin{align*}
 			\states' &= \{s| s\in \states\textrm{ and }\M,s \models\varphi\} \\
-			\rels_a' &= \rels_a \cap (\states' \times \states') \\
-			\vals'(p) &= \vals(p) \cap \states'~ \forall p
+			\rels_a' &= \rels_a \cap (\states' \times \states')~ \forall a\in A\\
+			\vals'(p) &= \vals(p) \cap \states'~ \forall p \in P
 	\end{align*}
 \end{definition}
 
@@ -182,7 +184,7 @@ When we are discussing announcement operators we are usually also interested in 
 	\end{itemize}
 \end{definition}
 
-Somewhat related to equivalence classes, we will also be using the concept of formula extensions, both to refer to the set of states a formula is satisfied in, denoted by $||\varphi||$, but also to refer to sets of formulas with the same extensions, i.e are satisfied in the same states.
+Somewhat related to equivalence classes, we will also be using the concept of formula extensions, referring to the set of states a formula is satisfied in, denoted by $||\varphi||$, but also to refer to a set of formulas with the same extension, i.e are satisfied in the same states.
 
 \begin{definition}[Formula extensions]
 	\label{def:ext}
