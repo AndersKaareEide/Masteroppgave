@@ -1,12 +1,12 @@
 \section{Theoretical work}\label{sec:theory}
 
-In this section we will present our theoretical work towards exploring the group announcement operator in GAL. In doing this, we will be building on the definitions that were established and introduced in the previous section.
+In this section we will present our theoretical work on exploring the group announcement operator in GAL. In doing this, we will be building on the definitions that were established and introduced in the previous section.
 
 \subsection{Enumeration of announcements in single agent cases}
 
 Going back to the definition of the semantics behind $\M,s \models \dia{G}\varphi$ in Definition \ref{def:dual}, an informal way of explaining it would be that there exists at least one set of formulas the coalition can announce such that $\varphi$ is true after their announcements. 
 
-Using our definitions of labeling formulas and formula extensions in Definition \ref{def:ext} and \ref{def:label} to look at what kinds of formulas any given agent can announce, we note that the goal is to convey information to the other agents in the system. Therefore we do not need to look at the formulas themselves, but only at what consequence announcing them would have and whether or not the agent is able to announce them. For this reason we will be using the concept of formula extensions from Definition \ref{def:ext} rather then concrete formulas as announcing any given formula will eliminate all states not in that formula's extension from the updated model as defined by the semantics of model updates.
+Using our definitions of labeling formulas and formula extensions in Definition \ref{def:ext} and \ref{def:label} to look at what kinds of formulas any given agent can announce, we note that the goal is to convey information to the other agents in the system. Therefore we do not need to look at the formulas themselves, but only at what consequence announcing them would have and whether or not the agent is able to announce them. For this reason we will be using the concept of formula extensions from Definition \ref{def:ext} instead of concrete formulas as announcing any given formula will eliminate all states not in that formula's extension from the updated model as defined by the semantics of model updates.
 
 \begin{figure}[h]
 	\label{fig:GAexample}
@@ -41,18 +41,18 @@ If we attempt to determine which sets of formulas some agent $i$ can announce in
 	\end{itemize}
 \end{definition}
 
-The reasoning behind these two rules is that looking back at the semantics of the group announcement operators in Definition \ref{def:GALsem}, we can see that we are essentially searching for a combination of formulas, which when announced will make $\varphi$ false. Because of this, having an agent  announce that they knows something which is false, or something they do not actually know, will simply make the public announcement trivially true. This means there is no point in checking any announcement containing such a formula, therefore the formula:
+The reasoning behind these two rules is based on the semantics of the group announcement operators in Definition \ref{def:GALsem}, we can see that we are essentially searching for a combination of formulas which when announced, make $\varphi$ false. Because of this, having an agent announce that they knows something which is false, or something they do not actually know, will simply make the public announcement trivially true. This means there is no point in checking any announcement containing such a formula, therefore the formula:
 
 \begin{itemize}
-	\item[(1)] has to be satisfied in the `current' state of our pointed model
-	\item[(2)] has to be satisfied in every state the agent is incapable of distinguishing from that `current' state
+	\item[(1)] has to be satisfied in the `actual' state of our pointed model
+	\item[(2)] has to be satisfied in every state the agent is incapable of distinguishing from that `actual' state
 \end{itemize}
 
 \begin{proposition}
 For every extension $\ext{\varphi}_{\M}$ that satisfies the rules in Definition \ref{def:extRules} for some agent, any formula with the same extension can be announced by that agent
 \end{proposition}
 
-The reasoning behind this proposition is based on our definition of formula extensions. The extension of a formula is simply the set of states in which this formula is satisfied. Therefore if $\varphi$ and $\psi$ share the same extension in some model $\M$, then $\M\models\varphi \leftrightarrow \psi$. From this we can further infer that $\M\models K_a\varphi \leftrightarrow K_a\psi$ for every $\psi$ with the same extension as $\varphi$
+From our definition of formula extensions in Definition \ref{def:ext}, the extension of a formula is simply the set of states in which this formula is satisfied. Therefore if $\varphi$ and $\psi$ share the same extension in some model $\M$, then $\M\models\varphi \leftrightarrow \psi$. From this we can further infer that $\M\models K_a\varphi \leftrightarrow K_a\psi$ for every $\psi$ with the same extension as $\varphi$
 
 
 \begin{definition}[The set of announceable extensions]\hfill\\
@@ -93,9 +93,9 @@ An interesting observation to make is that an agent $i$ is always capable of eli
 \begin{definition}[The set of extensions announceable by coalitions]
 	\label{def:extscoal}
 	The set of announceable extensions $\anns{G,(\M,s)}$ for some coalition $G$, given a bisimulation contracted pointed model $\M,s$ is defined as the following: \\
-	$\anns{G,(\M,s)} = \{\states' \subseteq \states ~|~ \forall s'\in \states', \neg\exists t\forall i\in G t\rels_i s', t\not\in \states' \textrm{ and } s\in\states'\}$
+	$\anns{G,(\M,s)} = \{\states' \subseteq \states ~|~ \forall s'\in \states', \neg\exists t\forall i\in G ~ t\rels_i s', t\not\in \states' \textrm{ and } s\in\states'\}$
 \end{definition}
-
+\todo{Explain more clearly}
 
 \subsection{Comparison to definitions in original paper on GAL}
 
@@ -123,7 +123,7 @@ From this, we argue that our definition of $\anns{G,(\M,s)}$ incorporates the sa
 	&s\in S'
 \end{align}
 
-Expanding on our restriction in $(3)$, we could write it out as `if there exists a state $t$ indistinguishable by all agents from $s$, then either $t\in S'$ or $s\not\in S'$'. A simpler way of phrasing this would be to say that for every state in $S'$, the intersection of it's equivalence classes for all agents in the coalition has to be a subset of $S'$. Changing (3) to fit this simpler phrasing gives us
+Expanding on our restriction in $(3)$, we could write it out as `if there exists a state $t$ indistinguishable by all agents from $s$, then either $t\in S'$ or $s\not\in S'$'. A simpler way of phrasing this would be to say that for every state in $S'$, the intersection of its equivalence classes for all agents in the coalition has to be a subset of $S'$. Changing (3) to fit this simpler phrasing gives us
 \begin{align}
 	\forall s'\in S' \cap_{i\in G}\eqc{s'}_i\subseteq S'
 \end{align}
@@ -139,6 +139,6 @@ which should further clarify that combining restriction $(4)$ and $(5)$ provides
 	Where $\varphi_{Ext}$ is a formula of the form $\bigvee_{s\in Ext}\varphi_{s}$
 \end{definition}
 
-Our reasons for this revised definition is that the original definition in \ref{def:GALsem} defines satisfaction of $[G]\varphi$ using a quantifier over an infinite set of formulas making it unfit for our goals of implementing a model checking tool. We will therefore be implementing the revised definition in \ref{def:GALsemV2} instead as the set of announceable extensions is far easier to enumerate than the set of announceable formulas. This is still equivalent to the original definition as we are simply grouping the infinite set of announceable formulas into a finite set of announceable extensions.
+Our reason for revising these definitions is that the original definitions in \ref{def:GALsem} define satisfaction of $[G]\varphi$ by using a quantifier over an infinite set of formulas making it unfit for our goals of implementing a model checking tool. We will therefore be implementing the revised definition in \ref{def:GALsemV2} instead as the set of announceable extensions is far easier to enumerate than the set of announceable formulas. This is still equivalent to the original definition as we are simply grouping the infinite set of announceable formulas into a finite set of announceable extensions.
 
 \todo{Walk through example of using updated definition to generate set of announceable extensions for coalition based on previous example and model}
