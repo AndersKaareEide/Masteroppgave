@@ -80,6 +80,9 @@ A simple practical example of an epistemic model could be us imagining someone t
 	\break \textit{Note that since we are working with S5 models, all nodes (states) also have reflexive edges to themselves, even if they are not explicitly drawn in these figures}
 \end{figure}
 
+
+\subsection{Model checking}
+
 \subsection{Language and semantics}
 
 Continuing with the model shown in Figure \ref{fig:basicEM}, we might want to express certain properties or verify that $p$ is indeed true in $(M,s_0)$, for this we would write $(M,s_0) \models p$, or that $s_0$ in the context of $M$ \textit{satisfies} $p$. More formally, $(M,s_0) \models p$ is true \textit{iff} $s_0 \in V(p)$ where if we go back to Definition \ref{def:model}, we can see that V is a valuation function for propositions, meaning that it returns the set of states in $M$, where $p$ is true. 
@@ -182,67 +185,6 @@ Somewhat related to equivalence classes, we will also be using the concept of fo
 	\end{itemize}
 \end{definition}
 
-\subsection{Bisimulation and bisimilarity}
-
-\question{Hvordan best skille mellom bisimilære tilstander og modeller}
-
-Sometimes we may want to express that two models are `the same', i.e. they satisfy exactly the same set of formulas, despite possibly being structurally different. For this, we have the notion of bisimilarity, denoted by $M \leftrightarroweq M'$. As the concept of bisimilarity is quite central to our exploration of the semantics of the group announcement operator, we introduce the definition of bisimilarity as follows in Definition \ref{def:bisim}
-
-\begin{definition}[Bisimulation]\label{def:bisim}
-	Given two models \model{} and \model{'}, a non-empty relation $\bisim\subseteq \states x \states '$  is a bisimulation between $M$ and $M'$ iff for all $s \in \states$ with $(s,s') \in \bisim\mathfrak{:}$
-	\begin{description}
-		\item[atoms] for all $p \in \props$: $s\in\vals(p)$ iff $s'\in\vals '(p)$;
-		\item[forth]  for all $a \in \ags$ and all $t \in \states$: if $s\rels_a t$, then there exists a $t'\in\states '$ such that $s'\rels'_a t'$ and $(t,t')\in\bisim\mathfrak{;}$
-		\item[back] for all $a \in \ags$ and all $t' \in \states'$: if $s'\rels'_a t'$, then there exists a $t\in\states $ such that $s\rels_a t$ and $(t',t)\in\bisim\mathfrak{;}$
-	\end{description}
-\end{definition} 
-
-\begin{figure}[h]
-	\label{fig:bisimmods}
-	\caption{Two bisimilar, but structurally different models}
-	\centering
-	\scalebox{1.8}{
-		\begin{tikzpicture}[scale = 1.0, every label/.append style = {font=\tiny}]	
-			\node[label={[label distance=-0.7cm]:$p$}] (s0) at (0,0.5) {$s_0$};
-			\node[label={[label distance=-0.7cm]:$\neg p$}] (s1) at (2,0.5) {$s_1$};
-		
-			\node[label={[label distance=-0.7cm]:$p$}] (s2) at (4,0) {$s_2$};
-			\node[label={[label distance=-0.7cm]:$\neg p$}] (s3) at (3,1) {$s_3$};
-			\node[label={[label distance=-0.7cm]:$\neg p$}] (s4) at (5,1) {$s_4$};
-		
-			\path[every node/.append style={font=\fontsize{10}{0}, fill=white, inner sep=2pt}] 
-				(s0) edge node {$a,b$} (s1);
-				
-			\path[every node/.append style={font=\fontsize{10}{0}, fill=white, inner sep=2pt}] 
-				(s2) edge node {$a$} (s3) ++
-				(s2) edge node {$b$} (s4);				
-		\end{tikzpicture}
-	} %End scaling
-\end{figure}
-
-Building on the concept of bisimilar states, the bisimulation contraction of a model $\M$ is the smallest bisimilar structure to $\M$, obtained by merging each set of bisimilar states in $\M$ into a single state. 
-
-\todo{Update description of algorithms relating to bisimulation contracting after finishing this clusterfuck}
-\begin{definition}[Bisimulation contracted models]
-	\label{def:bisimContract}
-	Given a model $\M$, one of it's smallest bisimilar structures $\M'$ is 
-\end{definition}
-
-The reason why this concept is interesting is that since these bisimulation contracted models do not contain any bisimilar states, this means that per the definition of bisimilarity, there has to exist some set of formulas that uniquely identify each state in our model by being satisfied only in that specific state of our model. We will refer to these as labeling formulas.
-
-\begin{definition}[Labeling formulas]
-	\label{def:label}
-	Given a bisimulation contracted model $\M$, there exists at least one formula $\varphi_s$ for every $s\in\states$ such that $\M,t \models \varphi_s$ iff $s = t$. More precisely in terms of formula extensions: 
-	\centering
-	$\forall s\in\states,~\exists\varphi_s$ such that $\ext{\varphi_s} = \{s\}$.
-\end{definition}
-
-Additionally, we will also be referring to the set of labeling formulas formulas for a given bisimulation contracted model $\M$ as $\labels{\M}$
-
-\begin{definition}[Set of labeling formulas]
-	\label{def:labelSet}
-	Given a bisimulation contracted model $\M$, the set of formulas uniquely identifying each state in the model, $\labels{\M}$ is defined as $\labels{\M} = \{\varphi_s | s \in \states\}$
-\end{definition}
 
 \subsection{State of the art}
 
