@@ -1,8 +1,13 @@
-%Test formulas for Muddy Children:
-%[ma|(mb|mc)][(!KA(ma))&((!KB(mb))&(!KC(mc)))]KB(mb)
-%
-
 \section{Implementation}\label{sec:impl}
+
+In this chapter we will present our own implementation of a model checker for Group Announcement Logic and describe its inner workings.
+
+\subsection{Choice of platform}
+
+\subsection{Language and interpretation}
+
+\subsection{Model checking}
+
 
 \todo{Mention inspiration from JFLAP and experience with using it as educational tool}
 %JFLAP, a tool previously used here at our faculty to teach students how turing machines and finite state automatas work.
@@ -121,6 +126,4 @@ There are also a fair few additions to the UI we would have liked to implement, 
 \todo{Fix apostrophe positioning somehow}\\
 
 There were also plans for generalizing \cname{}'s  model serializer in order for to be able to export the models as formats beyond its current basic binary format such as GEXF\footnote{\url{https://gephi.org/gexf/format/}} in order to be able to view these models in other tools such as Gephi\footnote{\url{https://gephi.org/}}. As the intended users of the tool are mainly students attempting to gain a better understanding of the semantics of the operators and structures in group announcement logic however, the feature was eventually scrapped as the models created would likely not be all that interesting to visualize in external tools anyway and the work involved would be fairly substantial for a feature that would probably go unused by most users.  Continuing on model serialization, we would also have liked to be able to store additional information or metadata about each model, such as being able to write notes about interesting properties a model might have or formulas that highlight said properties when checked against these models. 
-
-
 

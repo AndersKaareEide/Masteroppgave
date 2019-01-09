@@ -41,20 +41,8 @@ philosophical logic."\cite{Ditmarsch2007}
 
 Hintikka broadly considered to be the father of modern epistemic logic, while he himself thinks von Wright should hold the honor. Von Wright was 
 
-\subsection{State of the art}
 
-\todo{Find out where to stuff prior art and model checker discussion}
-
-Discuss activity in CTL, more active than epistemic logic\\
-Mention Tarski's World as example of educational software\\
-Mention DEMO and SMCDEL as examples of model checkers in epistemic logic.\\
-Highlight DEMO's usability problem, shitty UI\\
-Explain how \cname{} will attempt to improve this\\
-
-We will introduce a model checking tool 
-\todo{Mention Fitch, DEMO, SMCDEL++ and compare in terms of usability and goal}
-
-\subsection{Notation and basic concepts}
+\subsection{Logic and Kripke models}
 
 \todo{Fix intro}
 The logic this thesis will be working with, group announcement logic, is also one of these extensions of epistemic logic, but in addition to reasoning around information change also allows us to reason around what coalitions of agents are able to achieve through making public announcements in unison based on how they can change the information available to other agents in the system. Group announcement logic, like many other forms of epistemic logic revolve around the notion of so-called `possible worlds' and agents which may or may not be able to distinguish between them. When working with these possible worlds, we usually refer to them as states in some system we are trying to simulate. We describe which agents are able to distinguish between these states based on an accessibility relation for each agent, consisting of pairs of states they are unable to differentiate. Since we are solely working with epistemic models in this thesis, also known as S5 models, these accessibility relations will also be equivalence relations (meaning they are reflexive, symmetric and transitive), and we will from here on also refer to them as such.
@@ -256,3 +244,15 @@ Additionally, we will also be referring to the set of labeling formulas formulas
 	Given a bisimulation contracted model $\M$, the set of formulas uniquely identifying each state in the model, $\labels{\M}$ is defined as $\labels{\M} = \{\varphi_s | s \in \states\}$
 \end{definition}
 
+\subsection{State of the art}
+
+\todo{Find out where to stuff prior art and model checker discussion}
+
+Discuss activity in CTL, more active than epistemic logic\\
+Mention Tarski's World as example of educational software\\
+Mention DEMO and SMCDEL as examples of model checkers in epistemic logic.\\
+Highlight DEMO's usability problem, shitty UI\\
+Explain how \cname{} will attempt to improve this\\
+
+We will introduce a model checking tool 
+\todo{Mention Fitch, DEMO, SMCDEL++ and compare in terms of usability and goal}
