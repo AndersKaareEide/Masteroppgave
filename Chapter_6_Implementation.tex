@@ -1,13 +1,9 @@
 \section{Implementation}\label{sec:impl}
 
-In this chapter we will present our own implementation of a model checker for Group Announcement Logic and describe its inner workings.
-
-\subsection{Choice of platform}
-
-\subsection{Language and interpretation}
-
-\subsection{Model checking}
-
+* Discuss how formulas are interpreted / parsed into tree-structures where each the nodes themselves 'contain' definitions for the semantics behind the logical connective they represent, based on their class.
+* Refer back to previously presented algorithms when discussing recursive checking function
+* Refer back to background chapter when discussing why the problem is interesting when presenting artifact.
+* Model checking often limited to yes / no questions, discuss added value by transcending boolean 
 
 \todo{Mention inspiration from JFLAP and experience with using it as educational tool}
 %JFLAP, a tool previously used here at our faculty to teach students how turing machines and finite state automatas work.
@@ -26,6 +22,14 @@ They would additionally be able to type in a formula and then have the states in
 %Admittedly UX and design in general is not my strong suit and improving the interface is left as future work
 
 Figure \ref{fig:debugExmpl} shows a screenshot of \cname in action, where the user is stepping through the process of checking a specific formula against a state in their model and seeing why their formula is or is not satisfied. It also shows how the application breaks down epistemic formulas into sub-formulas and display them next to each state they have to be checked in. Additionally, the application also visualizes the current valuation of each operator and proposition in the formula as you step through the checking process, as can be seen from the red and green parts of the formulas being checked, as well as the Val column in the debugger tab. Note that the user can also step forwards or backwards through this process at any time by either clicking the step they want to skip to, or browsing with the arrow keys. 
+
+
+\subsection{Choice of platform}
+
+\subsection{Language and interpretation}
+
+\subsection{Model checking}
+
 
 \subsection{Tech choices}
 
