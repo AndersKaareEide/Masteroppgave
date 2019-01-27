@@ -10,7 +10,7 @@ Throughout the rest of this thesis, we will refer to the previous by the followi
 	Given a group of agents $\ags$, and a set of propositions $\props$, a model M is a structure \model{} , where
 	\begin{itemize}
 		\item $\states$ is a set of states
-		\item $\rels$ is a function from every agent $a \in \ags$ to $a$'s equivalence relation $\rels_a \subseteq \states\times\states$. 
+		\item $\rels$ is a function from every agent $a \in \ags$ to $a$'s equivalence relation $\rels_a \subseteq \states\times\states$
 		\item $\vals(p)$ is a valuation function that for every proposition $p \in \props$ returns the set of states where $p$ is true
 	\end{itemize}
 \end{definition}
@@ -38,16 +38,17 @@ A simple practical example of an epistemic model could be us imagining someone t
 
 \subsection{Language and semantics}
 
-Continuing with the model shown in Figure \ref{fig:basicEM}, we might want to express certain properties or verify that $p$ is indeed true in $(M,s_0)$, for this we would write $(M,s_0) \models p$, or that $s_0$ in the context of $M$ \textit{satisfies} $p$. More formally, $(M,s_0) \models p$ is true \textit{iff} $s_0 \in V(p)$ where if we go back to Definition \ref{def:model}, we can see that V is a valuation function for propositions, meaning that it returns the set of states in $M$, where $p$ is true. 
+Continuing with the model shown in Figure \ref{fig:basicEM}, we might want to express certain properties or verify that $p$ is indeed true in $(M,s_0)$, for this we would write $(M,s_0) \models p$, or that $s_0$ in the context of $M$ \textit{satisfies} $p$. More formally, $(M,s_0) \models p$ holds \textit{iff} $s_0 \in V(p)$ where if we go back to Definition \ref{def:model}, we can see that V is a valuation function for propositions, meaning that it returns the set of states in $M$, where $p$ holds. 
 
 In general however, we might want to build more complex formulas to check against our models than simple propositions, for this we need connectives; and logics that define their semantics.
 
 \begin{definition}[Group Announcement Logic] \hfill
 	\label{def:GAL}
  	\begin{align*}
-		\varphi ::= p \ | ~\neg\varphi ~|~ (\varphi~\wedge~\psi) ~|~ (\varphi~\vee~\psi) ~|~ \varphi 							\rightarrow \psi ~|~ K_a\varphi ~|~ [\varphi]\psi  ~|~ [G]\varphi
+		\varphi ::= p \ | ~\neg\varphi ~|~ (\varphi~\wedge~\psi) ~|~ (\varphi~\vee~\psi) ~|~ \varphi 							
+		\rightarrow \psi ~|~ K_a\varphi ~|~ [\varphi]\psi  ~|~ [G]\varphi
 	\end{align*}
-	Where $p$ is a proposition such that $p \in P$, $a$ is an agent i.e $a \in A$ and $G$ is a set of agents i.e $G \subseteq A$
+	where $p$ is a proposition such that $p \in P$, $a$ is an agent (i.e. $a \in A$) and $G$ is a set of agents (i.e. $G \subseteq A$).
 \end{definition}
 
 Definition \ref{def:GAL} defines the language of \lang{GAL} or more specifically, the set of legal formulas that can be built in accordance to GAL. It inductively specifies in BNF-notation how each operator in the language can be used to create new formulas. This notation however merely specifies the \textit{syntax} of the language, which ways we are allowed to arrange the symbols. In order to specify what each operator does, we also need semantics, which we will add through the satisfaction relation $\models$.
@@ -68,18 +69,18 @@ Definition \ref{def:GAL} defines the language of \lang{GAL} or more specifically
 
 \todo{Mention tautologies and falsehoods, plus valid and satisfiable formulas ect}
 
-Starting with the most basic component of our formulas we have propositions, commonly referred to as atoms or atomic formulas as propositions themselves are also formulas. If we want to check if some pointed model $\M,s \models p$ or satisfies some property $p$, then as we can see in Definition \ref{def:GALsem} we do this by seeing if the state $s$ is an element in the set of states where $p$ is true, more formally if $s \in \vals(p)$. 
+Starting with the most basic component of our formulas we have propositions, commonly referred to as atoms or atomic formulas as propositions themselves are also formulas. If we want to check if our pointed model $\M,s$ satisfies a property $p$ (denoted by $M,s\models p$), then as we can see in Definition \ref{def:GALsem} we do this by seeing if the state $s$ is an element in the set of states where $p$ is true, more formally if $s \in \vals(p)$. We denote the fact that the pointed model $M,s$ does not satisfy formula $\varphi$ by $M,s \not\models\varphi$.
 
-For the explanation of our operators we will be using $\varphi$ and $\psi$ to represent arbitrary formulas. Negation, $\neg$ is relatively trivial, with $\neg\varphi$ simply meaning the negation of $\varphi$ and that $\M,s \models \neg\varphi$ if, and only if $\M,s \not\models\varphi$. Conjunction and disjunction, $\wedge$ and $\vee$ are also pretty simple, translating to `and' and `inclusive or', as can be seen from their definitions in Definition \ref{def:GALsem}. Implication, $\rightarrow$ can be somewhat loosely translated to `if $a$, then $b$', except if $a$ doesn't hold, then the implication automatically holds regardless of $b$. More specifically, the only time an implication is false is when $a$ is true and $b$ is false. We will also use $\varphi \leftrightarrow \psi$, to denote biimplications, meaning $(\varphi \rightarrow \psi) \wedge (\psi \rightarrow \varphi)$ throughout this thesis. 
+For the explanation of our operators we will be using $\varphi$ and $\psi$ to represent arbitrary formulas. Negation $\neg$, is relatively trivial, with $\neg\varphi$ simply meaning the negation of $\varphi$ and that $\M,s \models \neg\varphi$ if, and only if $\M,s \not\models\varphi$. Conjunction and disjunction $\wedge$ and $\vee$, are also pretty simple, translating to `and' and (inclusive) `or', as can be seen from their definitions in Definition \ref{def:GALsem}. Implication, $\rightarrow$ can be somewhat loosely translated to `if $a$, then $b$', except if $a$ doesn't hold, then the implication automatically holds regardless of $b$. More specifically, the only time an implication is false is when $a$ is true and $b$ is false. We will also use $\varphi \leftrightarrow \psi$, to denote biimplications, meaning $(\varphi \rightarrow \psi) \wedge (\psi \rightarrow \varphi)$ throughout this thesis. 
 
 The previous operators are all relatively basic and only express properties regarding the structures they are checked against, the remaining operators in our language are more interesting, as they also express properties regarding the knowledge of the agents in our systems shifting us towards epistemic logic. The $K_i$ operator is the first of these, with $\M ,s \models K_ap$ expressing that in our pointed model agent $a$ knows that the proposition $p$ is true. Verifying that this is the case however is where things get interesting, as the previous operators only express properties regarding single states, their scope is also limited to that single state, whereas the $K_i$ operator also requires us to check all the states that this agent is incapable of distinguishing from the current state. In order to check if $\M,s \models K_a\varphi$, we need to ascertain that all states a is unable to distinguish from s also satisfy $\varphi$. More specifically, that for all states $t\rels_as$, that $\M,t \models\varphi$. This is because if there exists any such state that does not satisfy $\varphi$, then agent $a$ considers it possible that $\varphi$ is not satisfied since they cannot tell if $t$ or $s$ is the actual state they are in.
 
-While the $K_i$ operator lets us reason around the knowledge of our agents, the public announcement operator $[\varphi]\psi$ lets us update it, or at least add to it by informing the agents through a truthful announcement that some formula is true in the `current' state as defined by the pointed model we are checking the announcement in.
+While the $K_i$ operator lets us reason about the knowledge of our agents, the public announcement operator $[\varphi]\psi$ lets us update it, or at least add to it by informing the agents through a truthful announcement that some formula is true in the current state as defined by the pointed model we are checking the announcement in.
 In Definition \ref{def:GALsem} we use the notation $\M|\varphi,s$ to denote $\M$ `updated' by $\varphi$, meaning $\M$ minus all states which do not satisfy $\varphi$.
 
 \begin{definition}[Model Updates]
 	\label{def:modupdate}
-	$\M$ updated by $\varphi$ is defined as the following: $\M|_\varphi = \langle\states',\rels',\vals'\rangle$ where 
+	$\M = \langle\states,\rels,\vals\rangle$ updated by $\varphi$ is defined as the following: $\M|_\varphi = \langle\states',\rels',\vals'\rangle$ where 
 	\begin{align*}
 			\states' &= \{s| s\in \states\textrm{ and }\M,s \models\varphi\} \\
 			\rels_a' &= \rels_a \cap (\states' \times \states')~ \forall a\in A\\
@@ -87,9 +88,11 @@ In Definition \ref{def:GALsem} we use the notation $\M|\varphi,s$ to denote $\M$
 	\end{align*}
 \end{definition}
 
-Informally, the definition above in Definition \ref{def:modupdate} can be read as filtering out all states in $\M$ which do not satisfy $\varphi$ and then constraining the equivalence relations for each agent and the valuation function to that filtered set of states.
+Informally, Definition \ref{def:modupdate} can be read as filtering out all states in $\M$ which do not satisfy $\varphi$ and then constraining the equivalence relations for each agent and the valuation function to that filtered set of states.
 
-The final and most interesting operator in \lang{GAL} is $[G]\varphi$, or the group announcement operator, where $G$ is some coalition of agents such that $G \subseteq \ags$. $\M,s \models [G]\varphi$ expresses that there is no way for the group $G$ to announce anything that can make $\varphi$ false in $\M,s$. Note however that the formulas the agents in $[G]$ can announce are constrained to basic epistemic formulas, or to \lang{el} as defined in Definition \ref{def:langel} in order to avoid making our definition of group announcements circular. \todo{Reword sentence} The syntax of $\{\psi_i: i\in G\}[\bigwedge_{i\in G}K_i\psi_i]\varphi$ intuitively means `the conjunction of all formulas $K_i\psi_i$ such that each agent $i$ knows their formula $\psi_i$ and that after this conjunction is announced, $\varphi$ is true'. As the definition in Definition \ref{def:GALsem} specifies that this has to hold for \textit{every} set of $\{\psi_i : i\in G\}$ however, it might be easier to think of it as there not existing a set such that $\M,s \not\models [\bigwedge_{i\in G}K_i\psi_i]\varphi$ or that $G$ does \textit{not} have the ability to prevent $\varphi$ from coming true.
+The final and most interesting operator in \lang{GAL} is $[G]\varphi$, or the group announcement operator, where $G$ is some coalition of agents such that $G \subseteq \ags$. $\M,s \models [G]\varphi$ expresses that there is no way for the group $G$ to announce anything that can make $\varphi$ false in $\M,s$. Note however that the formulas the agents in $[G]$ can announce are constrained to basic epistemic formulas, or to \lang{el} as defined in Definition \ref{def:langel} in order to avoid making our definition of group announcements circular. The definition of satisfaction of the group announcement connective reduces to a quantified public announcement (note that this is a different connective with only superficial similarity). Is is defined as the statement that the conjuntion of all sets of formulas $\{\varphi_i:i\in G\}$ may be announced without making $\varphi$ true in the current state. More intuitively, that $G$ is unable to make $\varphi$ come about.
+
+The syntax of $\{\psi_i: i\in G\}[\bigwedge_{i\in G}K_i\psi_i]\varphi$ intuitively means `the conjunction of all formulas $K_i\psi_i$ such that each agent $i$ knows their formula $\psi_i$ and that after this conjunction is announced, $\varphi$ is true'. As the definition in Definition \ref{def:GALsem} specifies that this has to hold for \textit{every} set of $\{\psi_i : i\in G\}$ however, it might be easier to think of it as there not existing a set such that $\M,s \not\models [\bigwedge_{i\in G}K_i\psi_i]\varphi$ or that $G$ does \textit{not} have the ability to prevent $\varphi$ from coming true.
 
 \begin{definition}[Language of epistemic logic \lang{el}] \hfill
 	\label{def:langel}
@@ -101,7 +104,7 @@ The final and most interesting operator in \lang{GAL} is $[G]\varphi$, or the gr
 		\item[] $\M,s \models \varphi \rightarrow \psi $ iff $ \M,s \not\models \varphi $ or $ \M,s \models \psi$
 		\item[] $\M,s \models K_i\varphi $ iff for every $t$ such that $s\rels_{i}t$, $\M,s \models \varphi$
 	\end{itemize}
-	Where all operators have their semantics defined as in Definition \ref{def:GALsem}
+	where all operators have their semantics defined as in Definition \ref{def:GALsem}.
 \end{definition}
 
 We will also be using the duality of the two announcement operators, $\langle\varphi\rangle\psi$ and $\langle G\rangle\varphi$ which are defined as follows in Definition \ref{def:dual}.
@@ -116,9 +119,9 @@ We will also be using the duality of the two announcement operators, $\langle\va
 
 \end{definition}
 
-The difference between $[\varphi]\psi$ and $\dia{\varphi}\psi$ is that the box notation `implies' that $\psi$ is true in the updated model, \todo{reword sentence} while the diamond notation requires both that $\M,s\models \varphi$ and $M|_\varphi \models \psi$ For group announcements, the box notation expresses that something has to hold after any possible set of announcements the coalition can make, while the dual $\dia{G}$ expresses that there exists at least one set of announcements for the agents in $G$ such that after their announcements $\varphi$ is true. An interesting observation to make is that like in modal logics we have the same relation between $[\psi]\varphi$ and $\dia{\psi}\varphi$ as $\square\varphi$ and $\lozenge\varphi$, namely that $[\psi]\varphi \leftrightarrow \neg\dia{\psi}\neg\varphi$
+The difference between $[\varphi]\psi$ and $\dia{\varphi}\psi$ is that the box notation `implies' that $\psi$ is true in the updated model, while the diamond notation requires both that $\M,s\models \varphi$ and $M|_\varphi \models \psi$. For group announcements, the box notation expresses that something has to hold after any possible set of announcements the coalition can make, while the dual $\dia{G}$ expresses that there exists at least one set of announcements for the agents in $G$ such that after their announcements $\varphi$ is true. An interesting observation to make is that like in modal logics we have the same relation between $[\psi]\varphi$ and $\dia{\psi}\varphi$ as $\square\varphi$ and $\lozenge\varphi$, namely that $[\psi]\varphi \leftrightarrow \neg\dia{\psi}\neg\varphi$ and $[G]\varphi \leftrightarrow \neg\langle G\rangle\neg\varphi$.
 
-When we are discussing announcement operators we are usually also interested in the knowledge of the agents in our system, as such it is useful to be able to refer to the set of states an agent considers indistinguishable from the given state. For this we will be using the notion of equivalence classes, defined as the following:
+When we are discussing announcement operators we are usually also interested in the knowledge of the agents in our system, as such it is useful to be able to refer to the set of states an agent considers indistinguishable from the given state. For this we will be using the notion of equivalence classes, defined as the following.
 
 \begin{definition}[Equivalence classes]
 	\label{def:eqclass}
@@ -145,7 +148,7 @@ Somewhat related to equivalence classes, we will also be using the concept of fo
 Sometimes we may want to express that two models are `the same', i.e. they satisfy exactly the same set of formulas, despite possibly being structurally different. For this, we have the notion of bisimilarity, denoted by $M \leftrightarroweq M'$. As the concept of bisimilarity is quite central to our exploration of the semantics of the group announcement operator, we introduce the definition of bisimilarity as follows in Definition \ref{def:bisim}
 
 \begin{definition}[Bisimulation]\label{def:bisim}
-	Given two models \model{} and \model{'}, a non-empty relation $\bisim\subseteq \states x \states '$  is a bisimulation between $M$ and $M'$ iff for all $s \in \states$ with $(s,s') \in \bisim\mathfrak{:}$
+	Given two models \model{} and \model{'}, a non-empty relation $\bisim\subseteq \states \times \states '$  is a bisimulation between $M$ and $M'$ iff for all $s \in \states$ with $(s,s') \in \bisim\mathfrak{:}$
 	\begin{description}
 		\item[atoms] for all $p \in \props$: $s\in\vals(p)$ iff $s'\in\vals '(p)$;
 		\item[forth]  for all $a \in \ags$ and all $t \in \states$: if $s\rels_a t$, then there exists a $t'\in\states '$ such that $s'\rels'_a t'$ and $(t,t')\in\bisim\mathfrak{;}$
@@ -181,6 +184,7 @@ Building on the concept of bisimilar states, the bisimulation contraction of a m
 \todo{Update description of algorithms relating to bisimulation contracting after finishing this clusterfuck}
 \begin{definition}[Bisimulation contracted models]
 	\label{def:bisimContract}
+	A model $M$ is said to be bisimulation contracted iff there is no model $M'$ which is smaller and bisimilar to $\M$. A bisimulation contracted model of a model $M$, is any model $M'$ which is bisimulation contracted and bisimilar to $M$.
 	Given a model $\M$, one of it's smallest bisimilar structures $\M'$ is 
 \end{definition}
 
@@ -193,11 +197,11 @@ The reason why this concept is interesting is that since these bisimulation cont
 	$\forall s\in\states,~\exists\varphi_s$ such that $\ext{\varphi_s} = \{s\}$.
 \end{definition}
 
-Additionally, we will also be referring to the set of labeling formulas formulas for a given bisimulation contracted model $\M$ as $\labels{\M}$
+Additionally, we will also be referring to the set of labeling formulas for a given bisimulation contracted model $\M$ as $\labels{\M}$, defined as follows.
 
 \begin{definition}[Set of labeling formulas]
 	\label{def:labelSet}
-	Given a bisimulation contracted model $\M$, the set of formulas uniquely identifying each state in the model, $\labels{\M}$ is defined as $\labels{\M} = \{\varphi_s | s \in \states\}$
+	Given a bisimulation contracted model $\M$, the set of formulas uniquely identifying each state in the model is defined as $\labels{\M} = \{\varphi_s | s \in \states\}$
 \end{definition}
 
 
