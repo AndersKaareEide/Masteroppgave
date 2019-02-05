@@ -2,68 +2,34 @@
 
 In this chapter we will give the reader some insight into the background of these systems of logic while determining the state of the art, before introducing various concepts and terms that will be used later on in this thesis.
 
-\todo{Reword in order to fit model checker discussion}
-
-* Model checking and visualization is a general problem within knowledge representation and artificial intelligence, old field
-* Discuss why model checking is interesting / useful, because of system verification, as well as exploration of communication protocols and models.
-
-%Names:
-%Jaakko Hintikka -> Broadly considered to be the father of modern epistemic logic, he himself thinks von Wright deserves the honors
-%Georg Henrik von Wright -> Wrote a lot of the earliest papers but a lot of his work was disregarded by his peers due to 'a lack of formal rigor'
-%Saul Kripke -> Kripke structures named after him for his work on so-called possible world semantics
-
-%Notes:
-%The Stanford Encyclopedia of Philosophy's entry for dynamic epistemic logic does not mention group announcement logic and only briefly mentions arbitrary public announcement logic (APAL)
-%Epistemic logic gets its name from the Greek word for knowledge
-%
-
-%Start with epistemic logic, what is it
-%Continue into who pioneered it and when
-%Go into where the field headed afterwards, PAL APAL DEL GAL
-
-%SMCDEL:
-%Source files: https://github.com/jrclogic/SMCDEL/
-%Web UI: https://w4eg.de/malvin/illc/smcdelweb/index.html
-
-The field of epistemic logic is by no means a recent one, with most of the foundations upon which our modern systems and dialects are built having been published around the 1950s.\cite{StanfordEpiLogic}
-
-%Mention roots going back to ancient greece
-
-%"Modern treatments of the logic of knowledge and belief grow out of the work of a number of philosophers and logicians writing from 1948 through the 1950s. Rudolf Carnap, Jerzy Los, Arthur Prior, Nicholas Rescher, G.H. von Wright and others recognized that our discourse concerning knowledge and belief exhibits systematic features that admit of an axiomatic-deductive treatment. Among the many important papers that appeared in the 1950s, von Wright's seminal work (1951) is widely recognized as having initiated the formal study of epistemic logic as we know it today" \cite{StanfordEpiLogic}.
-
-"Information is communicated, so knowledge and belief are by no means static.
-Not surprisingly, many logicians have taken this into account. In the context of
-epistemic logic, there are many different approaches. Dynamic epistemic logic
-is an umbrella term for a number of extensions of epistemic logic with dynamic
-operators that enable us to formalize reasoning about information change. It
-came forth from developments in formal linguistics, computer science, and
-philosophical logic."\cite{Ditmarsch2007}
+%"Information is communicated, so knowledge and belief are by no means static. Not surprisingly, many logicians have taken this into account. In the context of epistemic logic, there are many different approaches. Dynamic epistemic logic is an umbrella term for a number of extensions of epistemic logic with dynamic operators that enable us to formalize reasoning about information change. It came forth from developments in formal linguistics, computer science, and philosophical logic."\cite{Ditmarsch2007}
 
 
-Hintikka broadly considered to be the father of modern epistemic logic, while he himself thinks von Wright should hold the honor. Von Wright was 
+%\subsection{Logic and Kripke models}
+
+%Epistemic logic is a branch of logic concerned with reasoning around the knowledge and beliefs of agents in systems, represented through formal languages and models. Many of the logics within this branch work with structures we call Kripke models. These Kripke models divide the world into three main components, a set of possible worlds, a set propositions which may or 
+
+%These Kripke models model the world around us as a set of possibilities, where each possibility splits the world in two. Either it rains or it doesn't rain, and if you know whether it rains then you can tell these possibilities apart. In these models we also have agents, whose knowledge we represent through their ability to tell these worlds apart. In these worlds certain properties hold, 
 
 
-\subsection{Logic and Kripke models}
+%Epistemic logic is a breanch of logic focused on reasoning around knowledge. More specifically on reasoning around the knowledge of agents in our systems. These systems 
 
-\todo{Fix intro}
 The logic this thesis will be working with, group announcement logic, is also one of these extensions of epistemic logic, but in addition to reasoning around information change also allows us to reason around what coalitions of agents are able to achieve through making public announcements in unison based on how they can change the information available to other agents in the system. Group announcement logic, like many other forms of epistemic logic revolve around the notion of so-called `possible worlds' and agents which may or may not be able to distinguish between them. When working with these possible worlds, we usually refer to them as states in some system we are trying to simulate. We describe which agents are able to distinguish between these states based on an accessibility relation for each agent, consisting of pairs of states they are unable to differentiate. Since we are solely working with epistemic models in this thesis, also known as S5 models, these accessibility relations will also be equivalence relations (meaning they are reflexive, symmetric and transitive), and we will from here on also refer to them as such.
 
-These simulations are then grouped into models consisting of a set of possible worlds or states, a set of equivalence relations for each agent we wish to model, as well as a set of boolean propositions which may or may not hold in a given state. 
-
+These simulations are then grouped into models consisting of a set of possible worlds or states, a set of equivalence relations for each agent we wish to model, as well as a set of boolean propositions which may or may not hold in a given state. Based on this set of possible worlds and these accessibility relations between them we can model what each agent in our system knows by defining knowledge as being 
 
 
 \subsection{Model checking}
 
+Model checking refers to the act of checking whether or not a formula holds in a given model. A simple example of model checking might be to check if its always true that Alice knows whether or not it is raining outside in the context of some model. A more interesting example could be to check whether or not there exists a sequence of actions that can be taken which might make a distributed system deadlock. Model checking is a general problem not just within knowledge representation and artificial intelligence, but also in other fields of computer science such as formal verification of communication protocols and software correctness.
 
-\subsection{State of the art}
+With model checking utilities being such useful tools for exploring the properties of more complex models, it should come as no wonder that there exists plenty of model checkers out there for various forms of logic. Most traditional model checkers however focus on answering simple yes or no questions in regards to whether something is true or not. One of the closest examples of this is DEMO\_S5 for dynamic epistemic logic (DEL), being a command-line application that lets the user types in their formulas and check it against models formatted as long strings of text. We aim to create a tool which can assist users in understanding how these systems work by providing a graphical editor that can visualize both the models themselves as well as the checking process.
 
-\todo{Find out where to stuff prior art and model checker discussion}
 
-Discuss activity in CTL, more active than epistemic logic\\
-Mention Tarski's World as example of educational software\\
-Mention DEMO and SMCDEL as examples of model checkers in epistemic logic.\\
-Highlight DEMO's usability problem, shitty UI\\
-Explain how \cname{} will attempt to improve this\\
+%Mention Tarski's World as example of educational software\\
+%Mention DEMO and SMCDEL as examples of model checkers in epistemic logic.\\
+%Highlight DEMO's usability problem, shitty UI\\
+%Explain how \cname{} will attempt to improve this\\
 
-We will introduce a model checking tool 
-\todo{Mention Fitch, DEMO, SMCDEL++ and compare in terms of usability and goal}
+%We will introduce a model checking tool 
+%\todo{Mention Fitch, DEMO, SMCDEL++ and compare in terms of usability and goal}
