@@ -1,19 +1,41 @@
 \section{Implementation}\label{sec:impl}
 
-* Discuss how formulas are interpreted / parsed into tree-structures where each the nodes themselves 'contain' definitions for the semantics behind the logical connective they represent, based on their class.
-* Refer back to previously presented algorithms when discussing recursive checking function
-* Refer back to background chapter when discussing why the problem is interesting when presenting artifact.
-* Model checking often limited to yes / no questions, discuss added value by transcending boolean 
+%* Discuss how formulas are interpreted / parsed into tree-structures where each the nodes themselves 'contain' definitions for the semantics behind the logical connective they represent, based on their class.
+%* Refer back to previously presented algorithms when discussing recursive checking function
+%* Refer back to background chapter when discussing why the problem is interesting when presenting artifact.
+%* Model checking often limited to yes / no questions, discuss added value by transcending boolean 
 
 \todo{Mention inspiration from JFLAP and experience with using it as educational tool}
 %JFLAP, a tool previously used here at our faculty to teach students how turing machines and finite state automatas work.
 
+%Innholdsliste:
+
+%Recap motivasjon
+%Forklar hvorfor grensesnittet ble som det ble, inspirasjon fra JFLAP ect
+%Introduksjon til visualisering, vis basics
+%Diskuter tegning av modeller, tilstander, kanter og agenter
+%Nevn håndtering av props og agentlister
+
+%Vis eksempler på sjekking av basic formler
+%Forklar innlesing av formler
+%Diskuter forskjeller mellom innskreven form vs logiske symboler (enklere å skrive inn)
+%Forklar hva som skjer, først sjekk hvilke states i modellen
+%Nevn interaktivitet gjennom sjekke subformler ved å muse over
+
+%Diskuter motivasjon og hensikt bak stepping-funksjonalitet
+%Vis basic eksempel på hvordan verktøyet presenterer steg-loggen
+%Vis mer avansert eksempel med public announcements og modell-oppdateringer
+%Vis eksempel med group announcements og hvordan verktøyet visualiserer de ulike strukturene koalisjoner kan begrense den orginale modellen til
+
 
 In this chapter we will present our own implementation of a model checker for Group Announcement Logic called \cname and describe its inner workings. Our initial goal with \cname was to create an educational tool that could aid students with learning epistemic logic in a more visual manner. Therefore, while most other model checking utilities such as DEMO \cite{JanvanEijck} stick to answering the user's queries with simple yes and no answers, we wanted to go beyond that by showing them not just whether their formulas hold, but also visualize why and provide the user with an easier, visual way of drawing models almost as they would on paper or blackboard. The reasoning behind this was that by allowing the user to manipulate the model through a simple click-and-drag interface and seeing how it can affect the valuation of various formulas they might gain a deeper understanding of the semantics involved.
 
+One of the big questions that needed to be answered when we started building \cname was how we wanted to not just present and visualize these highly abstract models, but also allow the user to manipulate them in a way that would be intuitive and easy to grasp. As I had previously used a tool called JFLAP with great success when teaching students as a TA about Turing machines and finite state automata
+For the user interface we ended up drawing most of our inspiration from JFLAP \footnote{www.jflap.org}, a tool not just for experimenting with finite state automata and Turing machines, but also a very useful teaching aid when attempting to teach the concepts behind these to others.
+
 
 \subsection{Generating examples}
-
+%Move to wayyyy later
 As our motivation behind creating \cname was to create a learning tool that could help new logicians understand how the semantics of GAL work, being able to generate examples which highlight interesting properties of our models is highly important. As such, MCGAL was designed from the ground up to be able to trace its steps through the model checking process so that it can also display each step of this process in an intuitive manner. The program therefore creates a log entry each time it checks an operator against a specific state in the model, keeping track of sub-formulas and formula depth as it goes through the operators. The reason behind also keeping track of sub-formulas and formula depth in the logs is to create a more easily navigable tree-like structure. This tree-structure facilitates skipping through chunks of the process that might not be particularly interesting to the user, allowing them to for example view each state the tool checks against a particular K-operator, or even skip through each of the possible updated models a coalition can reduce a model to through their announceable extensions, without having to step through the checking of the inner formula every time.
 
 \begin{figure}[H]
@@ -22,7 +44,7 @@ As our motivation behind creating \cname was to create a learning tool that coul
 	\includegraphics[width= \textwidth]{MCGALBasicChecking.png}
 \end{figure}
 
-As the tool provides a view of the model, it also updates this view by showing what the model it is currently checking against looks like, by highlighting the state and operator the tool is currently checking as well as graying out any states that have been filtered out by model updates. Examples of such model updates might be constraining the model to one of the formula extensions a coalition can announce, which is what is being displayed in Figure \ref{fig:basicGalChecking}. In this example, we are checking whether the formula $\neg [Bob]\neg KAnn[p]$ holds in state s3 of our model. The formula roughly translates to: 'It is not the case that Bob is unable to make Ann know $p$' or more simply in its dual form: 'Bob is able to make Ann know p'. From the visualization of our model in Figure \ref{fig:basicGalChecking} we can see that since Bob is able to reduce the model to only states where $p$ holds, Ann also trivially knows that $p$ holds in this updated model, satisfying our original formula. In this somewhat trivial example, the tool ended up only having to try announcing a single formula extension before it found an extension that made our original formula true. If we were to check a more complex formula however, it might end up checking tens of different announcements, each generating a different updated model after its announcement which the tool will helpfully visualize, giving the user insight into a coalition's capabilities. Note that the previous example could also have been made easier by rewriting the formula as $\dia{Bob}KAnn[p]$, but unfortunately the tool does not (yet) support diamond operators. 
+As the tool provides a view of the model, it also updates this view by showing what the model it is currently checking against looks like, by highlighting the state and operator the tool is currently checking as well as graying out any states that have been filtered out by model updates. Examples of such model updates might be constraining the model to one of the formula extensions a coalition can announce, which is what is being displayed in Figure \ref{fig:basicGalChecking}. In this example, we are checking whether the formula $\neg [Bob]\neg K_{Ann}[p]$ holds in state s3 of our model. The formula roughly translates to: 'It is not the case that Bob is unable to make Ann know $p$' or more simply in its dual form: 'Bob is able to make Ann know p'. From the visualization of our model in Figure \ref{fig:basicGalChecking} we can see that since Bob is able to reduce the model to only states where $p$ holds, Ann also trivially knows that $p$ holds in this updated model, satisfying our original formula. In this somewhat trivial example, the tool ended up only having to try announcing a single formula extension before it found an extension that made our original formula true. If we were to check a more complex formula however, it might end up checking tens of different announcements, each generating a different updated model after its announcement which the tool will helpfully visualize, giving the user insight into a coalition's capabilities. Note that the previous example could also have been made easier by rewriting the formula as $\dia{Bob}K_{Ann}[p]$, but unfortunately the tool does not (yet) support diamond operators. 
 
 
 \begin{figure}[h]
@@ -34,7 +56,7 @@ As the tool provides a view of the model, it also updates this view by showing w
 %Admittedly UX and design in general is not my strong suit and improving the interface is left as future work
 %They would additionally be able to type in a formula and then have the states in their model light up, highlighting which states satisfy the given formula. 
 
-Another key feature of the application is that in addition to simply checking which states in the user's model satisfy their fomula, they can also look more closely at why a formula is or is not satisfied in a given state. In order to help the user with this, the application visualizes the checking process step-by-step, one operator and state at a time, with progress being displayed by updating the color of each operator in the formula according to their current valuation.
+Another key feature of the application is that it also helps the user keep track of which formulas are being checked in the various states, by displaying the formulas as a list next to each state and coloring them by their valuation as the user steps through the checking process.  addition to simply checking which states in the user's model satisfy their fomula, they can also look more closely at why a formula is or is not satisfied in a given state. In order to help the user with this, the application visualizes the checking process step-by-step, one operator and state at a time, with progress being displayed by updating the color of each operator in the formula according to their current valuation.
 
 
 Figure \ref{fig:debugExmpl} shows a screenshot of \cname in action, where the user is stepping through the process of checking a specific formula against a state in their model, having the tool visualize whether or not their formula holds. It also shows how the application breaks down epistemic formulas into sub-formulas and display them next to each state they have to be checked in. Additionally, the application also visualizes the current valuation of each operator and proposition in the formula as you step through the checking process, as can be seen from the red and green parts of the formulas being checked, as well as the Val column in the debugger tab. Note that the user can also step forwards or backwards through this process at any time by either clicking the step they want to skip to, or browsing with the arrow keys. 
