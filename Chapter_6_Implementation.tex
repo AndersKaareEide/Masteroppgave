@@ -5,15 +5,18 @@
 %* Refer back to background chapter when discussing why the problem is interesting when presenting artifact.
 %* Model checking often limited to yes / no questions, discuss added value by transcending boolean 
 
-\todo{Mention inspiration from JFLAP and experience with using it as educational tool}
 %JFLAP, a tool previously used here at our faculty to teach students how turing machines and finite state automatas work.
 
 %Innholdsliste:
 
 %Recap motivasjon
 %Forklar hvorfor grensesnittet ble som det ble, inspirasjon fra JFLAP ect
+%Anekdote rundt bruken av JFLAP 
+	%Nytte for studenter
 %Introduksjon til visualisering, vis basics
+	%Trekke sammenligninger mellom visualiseringen av Kripke og FSAer
 %Diskuter tegning av modeller, tilstander, kanter og agenter
+	%Grunngi 
 %Nevn håndtering av props og agentlister
 
 %Vis eksempler på sjekking av basic formler
@@ -23,21 +26,64 @@
 %Nevn interaktivitet gjennom sjekke subformler ved å muse over
 
 %Diskuter motivasjon og hensikt bak stepping-funksjonalitet
+	%	Sammenlign med stepper i JFLAP
 %Vis basic eksempel på hvordan verktøyet presenterer steg-loggen
 %Vis mer avansert eksempel med public announcements og modell-oppdateringer
 %Vis eksempel med group announcements og hvordan verktøyet visualiserer de ulike strukturene koalisjoner kan begrense den orginale modellen til
+	%	Muligens visualisere kunnskap de dicto vs de re? Må finne enkelt eksempel som ikke blir horribelt rotete i så fall
 
 
-In this chapter we will present our own implementation of a model checker for Group Announcement Logic called \cname and describe its inner workings. Our initial goal with \cname was to create an educational tool that could aid students with learning epistemic logic in a more visual manner. Therefore, while most other model checking utilities such as DEMO \cite{JanvanEijck} stick to answering the user's queries with simple yes and no answers, we wanted to go beyond that by showing them not just whether their formulas hold, but also visualize why and provide the user with an easier, visual way of drawing models almost as they would on paper or blackboard. The reasoning behind this was that by allowing the user to manipulate the model through a simple click-and-drag interface and seeing how it can affect the valuation of various formulas they might gain a deeper understanding of the semantics involved.
+In this chapter we will present our own implementation of a model checker for Group Announcement Logic called \cname{} and describe its inner workings. Our initial goal with \cname{} was to create an educational tool that could aid students with learning epistemic logic in a more visual manner. Therefore, while most other model checking utilities such as DEMO \cite{JanvanEijck} stick to answering the user's queries with simple yes and no answers, we wanted to go beyond that by showing them not just whether their formulas hold, but also visualize why and provide the user with an easier, visual way of drawing models almost as they would on paper or blackboard. The reasoning behind this was that by allowing the user to manipulate the model through a simple click-and-drag interface and seeing how it can affect the valuation of various formulas they might gain a deeper understanding of the semantics involved.
 
-One of the big questions that needed to be answered when we started building \cname was how we wanted to not just present and visualize these highly abstract models, but also allow the user to manipulate them in a way that would be intuitive and easy to grasp. As I had previously used a tool called JFLAP with great success when teaching students as a TA about Turing machines and finite state automata
-For the user interface we ended up drawing most of our inspiration from JFLAP \footnote{www.jflap.org}, a tool not just for experimenting with finite state automata and Turing machines, but also a very useful teaching aid when attempting to teach the concepts behind these to others.
+One of the big questions that needed to be answered when we started building \cname{} was how we wanted to not just present and visualize these highly abstract models, but also allow the user to manipulate them in a way that would be intuitive and easy to grasp. As I had previously used a tool called JFLAP\footnote{www.jflap.org} with great success when teaching students as a TA about Turing machines and finite state automata (FSAs) I ended up drawing most of my inspiration from it when drawing up my initial sketches for how I imagined my own tool might look. While my own experience with JFLAP is mostly limited to visualizing, editing and toying with Turing machines and finite state automatas, it is a fairly sophisticated package of graphical tools covering also covering many other concepts of formal languages and automata theory. JFLAPs editor is relatively simplistic, but it still helped my own and my students' understanding of FSAs tremendously by allowing us to interact and play with what is otherwise a really abstract concept and as such, I wanted to see if I could create a similarly potent learning aid for epistemic logic. 
 
+\begin{figure}[H]
+	\label{fig:JFLAP_basic illustration}
+	\caption{A basic two-state turing machine}
+	\includegraphics[width= \textwidth]{JFLAPbasicIllustration.PNG}
+\end{figure}
+
+%When I took the same course myself the year before I became a TA in it, most of the students, myself included found Turing machines to be a really hard and abstract concept to grasp as we were simply explained how they worked and then instructed to write instructions that would perform certain basic tasks using pen and paper alone. Obviously, this left us without any way to check whether or not our 
+
+While I could have created a simpler non-graphical model checking tool for GAL similar to DEMO, I wanted to create something more powerful that could help visualize epistemic logic the same way that JFLAP visualizes Turing machines. This ended up taking a lot of work, but my justification is that although a similar non-graphical tool would probably have helped me teach my students how FSAs and Turing machines work as well, I highly doubt it would have been anywhere near as effective without being able to visualize the 'how's and 'why's and instead only spat out 'yes' or 'no' answers to our queries in the same manner that most model checking utilities do. 
+%Learning benefit
+
+\subsection{Visualization of Kripke structures}
+%Visualization of Turing machines vs kripke stuctures
+%Both have states, transitions vs indistinguishability, tape of input vs formula to traverse and check
+Although finite state automatons and epistemic logic might initially seem relatively far detached, the Kripke structures we use share a fair few similarities to FSAs that made me realize I could visualize our models in almost the same manner as JFLAP does its automatons. For instance, they both consist of a set of states, and while FSAs and Turing machines have transition rules, whereas we have an indistinguishability relation, they can both basically just be visualized as edges in a graph where the nodes are our states. Whereas JFLAP labels its edges with the each transition rule, we label ours with the set of agents that considers our pair of states indistinguishable and additionally label each state with the set of propositions that hold in it. We present our tool visualizing a basic model in Figure \ref{fig:basicModelVis}.
+
+
+\begin{figure}[H]
+	\label{fig:basicModelVis}
+	\caption{A basic model, visualized in \cname}
+	\includegraphics[width= \textwidth]{BasicModel.png}
+\end{figure} 
+
+%Mention basic usage, how one draws models, example blackboard, simple, intuitive, easy
+As can be seen in Figure \ref{fig:basicModelVis}, the UI of \cname{} is fairly close to that of JFLAP, as I wanted to recreate its way of drawing models almost as one does with pen and paper as much as possible so that the interface feels `natural' and intuitive to someone with little to no previous experience with Kripke structures. As such, the editor was made to be as simple as possible, consisting of only three main tools, one for selecting and moving elements, one for drawing new states and one for creating edges between them. Additionally, the editor provides two side panels for managing the lists of properties and agents in our models, where the we can also select which ones to use when drawing new components or to apply to existing ones.
+
+After the user creates their model, the next step is to start checking formulas against it. One trade-off that had to be made here was whether or not to stick to the original symbols for the various operators in our language or to come up with replacements which are easier to type in. As requiring the user to memorize half a dozen unicode character codes probably would not offer the best user experience, I opted to replace them with more easily accessible replacements I figured would make sense to most users. Since I assume most users of my users to be at least faintly familiar with programming, I ended up taking most of my inspiration from symbols used to represent boolean operators in programming, such as replacing $\vee$ and $\cup$ with $\|$ and $\&$ for disjunctions and conjunctions respectively, as they can basically be seen as `or' and `and'. That said, the editor helpfully translates any formula the user types in back into proper legal formulas when displaying them, which should hopefully clear up any confusion, at least once the user looks up which symbols were replaced \footnote{For the full list of replaced symbols and their replacements, see the tool's wiki pages at https://github.com/AndersKaareEide/MCGAL/wiki}.
+
+%Checking formulas, visualize which states in our model satisfy the given formula
+%Mention interactive formula display with subformulas
+
+When the user finishes typing in their formula, the tool checks their formula against each state in their model and colors each state based on whether or not the user's formula is satisfied in that state, which can be seen in Figure \ref{fig:labelHover}.
+
+\todo{replace image with one that shows mouse pointer}
+\begin{figure}[H]
+	\label{fig:labelHover}
+	\caption{Illustration of interactive formula display}
+	\includegraphics[width= \textwidth]{LabelMouseOver.png}
+\end{figure}
+%Paint models, states
+
+%Mention deviation from logic here? Flipped valuation function, 
 
 \subsection{Generating examples}
 %Move to wayyyy later
 As our motivation behind creating \cname was to create a learning tool that could help new logicians understand how the semantics of GAL work, being able to generate examples which highlight interesting properties of our models is highly important. As such, MCGAL was designed from the ground up to be able to trace its steps through the model checking process so that it can also display each step of this process in an intuitive manner. The program therefore creates a log entry each time it checks an operator against a specific state in the model, keeping track of sub-formulas and formula depth as it goes through the operators. The reason behind also keeping track of sub-formulas and formula depth in the logs is to create a more easily navigable tree-like structure. This tree-structure facilitates skipping through chunks of the process that might not be particularly interesting to the user, allowing them to for example view each state the tool checks against a particular K-operator, or even skip through each of the possible updated models a coalition can reduce a model to through their announceable extensions, without having to step through the checking of the inner formula every time.
-
+ 
 \begin{figure}[H]
 	\label{fig:basicGalChecking}
 	\caption{Checking a basic group announcement formula in MCGAL}
@@ -71,7 +117,7 @@ Figure \ref{fig:debugExmpl} shows a screenshot of \cname in action, where the us
 
 \subsection{Tech choices}
 
-Our model checker was implemented in Kotlin as it is a new and exiting language while also being based on the JVM, providing access to the wast libraries and tools written for Java, including JavaFX and a Java hook for ANTLR which will be discussed in more detail later in this section. Kotlin additionally has a smooth and concise syntax as well as lending itself very well towards writing functional code despite being object oriented through shorthands for lambda expressions, support for proper function types and distinctions between mutable and immutable structures and variables. Among the other benefits of the language is that Kotlin being a relatively fresh and recent language, is that it has been able to draw plenty of inspiration from other  meaning it also has lots of lovely `modern' language features such as type inference, string interpolation and default values for making function arguments optional, meaning you no longer have to write three different constructors as one would in good old Java. While the language is still relatively young, being first unveiled in 2011\cite{KotlinHello}, it is being backed by Jetbrains, who are well known for their suite of plugins and IDEs such as IntelliJ and PyCharm, meaning the language has excellent tooling support despite its age.
+Our model checker was implemented in Kotlin as it is a new and exiting language while also being based on the JVM, providing access to the wast libraries and tools written for Java, including JavaFX and a Java hook for ANTLR which will be discussed in more detail later in this section. Kotlin additionally has a smooth and concise syntax as well as lending itself very well towards writing functional code despite being object oriented through shorthands for lambda expressions, support for proper function types and distinctions between mutable and immutable structures and variables. Among the other benefits of the language is that Kotlin being a relatively fresh and recent language, is that it has been able to draw plenty of inspiration from other  meaning it also has lots of lovely `modern' language features such as type inference, string interpolation and default values for making function arguments optional, meaning you no longer have to write three different constructors as one would in good old Java. While the language is still relatively young, being first unveiled in 2011\cite{KotlinHello}, it is being backed by Jetbrains, who are well known for their suite of plugins and IDEs such as IntelliJ and PyCharm, meaning the language has excellent tooling support despite its young age.
 
 As for the choice of graphics library to build the application's user interface in, the choice fell on a Kotlin wrapper for the de facto standard Java GUI library of JavaFX, called TornadoFX\footnote{Library homepage at: \url{https://tornadofx.io}}. While JavaFX is a widely used and mature library with powerful features, we also feel it tends to be somewhat clunky and verbose unless one dumps the layout and positioning of components into specialized XML-files. While this helps clean up classes representing UI-components, we also find it makes dynamic component generation clumsier. Our reasons for wanting to use TornadoFX over plain JavaFX is that TornadoFX, being a Kotlin library is able to have a much cleaner and prettier API by utilizing Kotlin features such as lambda expressions attached to receivers to create composable builder functions which generate your JavaFX component hierarchy in an imperative fashion. Another excellent feature of TornadoFX is its concise shorthands for creating dynamic bindings between UI components and observable sets of data. An example of this would be using the standard bindChildren() function to dynamically create and destroy UI components representing states in the user's epistemic model based on changes to that internal list of objects which represent states in a single line of code, by simply feeding the bindChildren() function a reference to the observable list of states and a transformation function that converts the data structure representing a state, to the corresponding UI component, in our case simply the constructor of this component. If anything, I would say that TornadoFX's greatest feature is how its composable builder functions allows you to circumvent the normally inverse order of declaration and creation of UI components compared to their order in the component hierarchy, which can be seen in Figure \ref{fig:StatFragSnip}. \todo{Find out why Latex is fucking up this reference}
 
