@@ -22,7 +22,6 @@ Using our definitions of labeling formulas and formula extensions in Definition 
 
 \begin{figure}[h]
 	\label{fig:GAexample}
-	\caption{A basic bisimulation contracted model.}
 	\centering
 	\scalebox{1.8}{
 		\begin{tikzpicture}[scale = 1.4, every label/.append style = {font=\tiny}]	
@@ -38,6 +37,7 @@ Using our definitions of labeling formulas and formula extensions in Definition 
 					(s2) edge node {$b$} (s4);								
 		\end{tikzpicture}
 	} %End scaling
+	\caption{A basic bisimulation contracted model.}
 \end{figure}
 
 If we attempt to determine which sets of formulas some agent $i$ can announce in the model in Figure \ref{fig:GAexample} we can see that the set of announceable formula extensions will always be a subset of the power set of states in the model. Or more precisely, the set of announceable formula extensions for some agent $i$ in a given pointed model $\M,s$ is a subset of the power set of states in $\M$, where each set is announceable by $i$ if and only if that set follows the following rules in Definition \ref{def:extRules}.
