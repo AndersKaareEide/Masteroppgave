@@ -69,9 +69,9 @@ Going back to our presentation of \cname{} in the previous chapter, we described
 	\caption{Function responsible for highlighting which states in our model satisfy the input formula}
 \end{figure}
 
-How step-by-step visualization works is somewhat more involved. A high-level description of how it is implemented is that the `debugger' hooks into the $check$ function of the formula, and logs each step of the checking process. Looking back at Figure \ref{fig:formulaImpl}, this can be seen through our calls to \textit{createDebugEntry}, which is responsible for logging the 
+How step-by-step visualization works is somewhat more involved. A high-level description of how it is implemented is that the `debugger' hooks into the $check$ function of the formula, and logs each step of the checking process. Looking back at Figure \ref{fig:formulaImpl}, this can be seen through our calls to \textit{createDebugEntry}, which is responsible for logging the valuation of each operator in the user's formula before and after every call to this $check$ function.
 
- Each log then carries information about what the valuations of each operator was at that point in the process, so that this checking process can be played back and visualized in the form of showing the various operators change color as their valuations become known. 
+Each log then carries information about what the valuations of each operator was at that point in the process, so that this checking process can be played back and visualized in the form of showing the various operators change color as their valuations become known. 
  
 
 

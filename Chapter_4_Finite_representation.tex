@@ -78,7 +78,7 @@ From our definition of formula extensions in Definition \ref{def:ext}, the exten
 For a more practical explanation we will apply these rules to the model in Figure \ref{fig:GAexample} for agent $a$. Using $s_1$, denoted $1$ in the next example, as the actual state of our pointed model, we start by generating the power set of states in our model and get the following:
 
 \begin{align*}
-	\wp(\states) = \{\emptyset,\{1\}\{2\},\{3\},\{4\},\{1,2\},...,\{1,2,3\},...\{1,2,3,4\}\}
+	\wp(\states) = \{\emptyset,\{1\},\{2\},\{3\},\{4\},\{1,2\},...,\{1,2,3\},...\{1,2,3,4\}\}
 \end{align*}
 After applying rule (1) from Definition \ref{def:extRules}	to filter out all formula extensions not containing the actual state of our pointed model we get:
 \begin{align*}
@@ -111,8 +111,6 @@ An interesting observation to make is that an agent $i$ is always capable of eli
 A candidate set $\states'\subseteq\states$ not satisfying the condition is clearly not announceable because it contains a state $s$ which no agent in the coalition can distinguish from the excluded state $t$.
 
 \subsection{Proof of suitability}
-
-\todo{reword intro}
 
 In this section we will compare our definitions and work so far with the definitions presented by Ågotnes et al. in their paper on GAL. In their paper they describe how to check formulas of the kind $\dia{G}\varphi$ in the following manner:
 
@@ -263,7 +261,7 @@ As we have now laid the groundwork of formulating how we can compute bisimulatio
 	\end{algorithmic}
 \end{algorithm}
 
-As can be seen, the algorithm for generating the set of announceable extensions is pretty much just generating the power set of states in the model, i.e. the set of all possible extensions, and then filtering it according to the rules in Definition \ref{def:extRules}. The $genEqClass(state, agents)$ function used is mostly identical to the $neighbours$ function used previously, except it returns the list of states that the coalition as a whole considers indistinguishable from the input state. 
+As can be seen, the algorithm for generating the set of announceable extensions boils down to generating the power set of states in the model, i.e. the set of all possible extensions, and then filtering it according to the rules in Definition \ref{def:extRules}. The $genEqClass(state, agents)$ function used is mostly identical to the $neighbours$ function used previously, except it returns the list of states that the coalition as a whole considers indistinguishable from the input state. 
 
 Now that we have not only our bisimulation contracted model, but also a way to generate all of the announceable formula extensions for any coalition, describing the algorithm for checking whether a group announcement formula is satisfied or not becomes entirely trivial. As these extensions are really just stand-ins for some announcement made by the agents as per the original definition in Definition \ref{def:GALsem}, we can also regard them as constraints on our model. Going by our revised definition of the semantics behind the group announcement operator from definition \ref{def:GALsemV2}, all our algorithm needs to do is to check whether all of the constrained models we get from applying these constraints to our bisimulation contracted model satisfy the post condition of the group announcement. As such, we translated the semantics of the group announcement operator into the following checking function, shown in Algorithm \ref{alg:checkGroupAnn}.
 
