@@ -1,4 +1,4 @@
-\section{Finite representation}\label{sec:algorithms}
+\section{Model checking Group Announcement Logic}\label{sec:algorithms}
 %Describe process of translating logical definitions into pseudocode here, then describe model checker in next chapter
 
 In this section we will describe the process of translating the definitions from the previous chapter into algorithms that will be used in our model checker. 
@@ -21,7 +21,6 @@ Recall the definition of the semantics behind $\M,s \models \dia{G}\varphi$ in D
 Using our definitions of labeling formulas and formula extensions in Definition \ref{def:ext} and \ref{def:label} to look at what kinds of formulas any given agent can announce, we note that the goal is to convey information to the other agents in the system. Therefore we do not need to look at the formulas themselves, but only at what consequence announcing them would have and whether or not the agent is able to announce them. For this reason we will be using the concept of formula extensions from Definition \ref{def:ext} instead of concrete formulas as announcing any given formula will eliminate all states not in that formula's extension from the updated model as defined by the semantics of model updates.
 
 \begin{figure}[h]
-	\label{fig:GAexample}
 	\centering
 	\scalebox{1.8}{
 		\begin{tikzpicture}[scale = 1.4, every label/.append style = {font=\tiny}]	
@@ -38,6 +37,7 @@ Using our definitions of labeling formulas and formula extensions in Definition 
 		\end{tikzpicture}
 	} %End scaling
 	\caption{A basic bisimulation contracted model.}
+	\label{fig:GAexample}
 \end{figure}
 
 If we attempt to determine which sets of formulas some agent $i$ can announce in the model in Figure \ref{fig:GAexample} we can see that the set of announceable formula extensions will always be a subset of the power set of states in the model. Or more precisely, the set of announceable formula extensions for some agent $i$ in a given pointed model $\M,s$ is a subset of the power set of states in $\M$, where each set is announceable by $i$ if and only if that set follows the following rules in Definition \ref{def:extRules}.
@@ -184,7 +184,7 @@ The resulting algorithm is fairly similar to the logical definition, with the $p
 \label{alg:kc}
 \begin{algorithmic}
 \Function{$knowledgeCheck$}{$s,s',States,Agents$}
-	\ForAll{$(t, Ags) \ in \ Neighbours(s,Agents, States')$}
+	\ForAll{$(t, Ags) \ in \ neighbours(s,Agents, States')$}
 		\ForAll{$a \ in \ Ags$}
 			\State $hasMatching \gets false$
 			\ForAll{$(t', Ags') \ in \ neighbours(s', Agents, States')$}
@@ -223,16 +223,18 @@ Building on the previous algorithm, the next step is using it to create an algor
 				\EndFor
 			\EndFor
 			\State $CS \gets States \ \setminus \ (keys \ in \ bisimMap)$
-			\State $CE \gets \{ e \in Edges ~|~ startState(e) \not\in CS \ and \ endState(e) \not\in CS\}$
+			\State $CE \gets \{ e \in Edges ~|~ e.state1 \not\in CS \ and \ e.state2 \not\in CS\}$
 			\State $contractedModel \gets (CS, Agents, CE)$
 			\State \Return $contractedModel$
 		\EndFunction
 	\end{algorithmic}
 \end{algorithm}
 
+\question{Burde ikke filteret i CE 'flippes'? Altså at $startState(e) \in CS$?}
+
 \subsection{Enumerating the set of announceable extensions}
 
-As we have now laid the groundwork of formulating how we can compute bisimulation contractions of models, we can move on to presenting how we can generate the set of announceable extensions. For this we will be using the definition of announceable extensions presented in Definition \ref{def:extscoal}. While Ågotnes et al.'s definition in \ref{def:GALsemAagotnes} is cleaner and more compact, our definition more closely resembles its pseudocode translation.
+As we have now laid the groundwork of formulating how we can compute bisimulation contractions of models, we can move on to presenting how we can generate the set of announceable extensions. For this we will be using the definition of announceable extensions presented in Definition \ref{def:extscoal}. While Ågotnes et al.'s definition in \ref{def:GALsemAagotnes} is more compact, our definition more closely resembles its pseudocode translation.
 
 \begin{algorithm}
 	\caption{Generating a coalition's set of announceable extensions}
@@ -263,14 +265,14 @@ As we have now laid the groundwork of formulating how we can compute bisimulatio
 
 As can be seen, the algorithm for generating the set of announceable extensions boils down to generating the power set of states in the model, i.e. the set of all possible extensions, and then filtering it according to the rules in Definition \ref{def:extRules}. The $genEqClass(state, agents)$ function used is mostly identical to the $neighbours$ function used previously, except it returns the list of states that the coalition as a whole considers indistinguishable from the input state. 
 
-Now that we have not only our bisimulation contracted model, but also a way to generate all of the announceable formula extensions for any coalition, describing the algorithm for checking whether a group announcement formula is satisfied or not becomes entirely trivial. As these extensions are really just stand-ins for some announcement made by the agents as per the original definition in Definition \ref{def:GALsem}, we can also regard them as constraints on our model. Going by our revised definition of the semantics behind the group announcement operator from definition \ref{def:GALsemV2}, all our algorithm needs to do is to check whether all of the constrained models we get from applying these constraints to our bisimulation contracted model satisfy the post condition of the group announcement. As such, we translated the semantics of the group announcement operator into the following checking function, shown in Algorithm \ref{alg:checkGroupAnn}.
+Now that we have not only our bisimulation contracted model, but also a way to generate all of the announceable formula extensions for any coalition, describing the algorithm for checking group announcement formulas becomes straightforward. As these extensions are really just stand-ins for some announcement made by the agents as per the original definition in Definition \ref{def:GALsem}, we can also regard them as constraints on our model. Going by our revised definition of the semantics behind the group announcement operator from definition \ref{def:GALsemV2}, all our algorithm needs to do is to check whether all of the constrained models we get from applying these constraints to our bisimulation contracted model satisfy the post condition of the group announcement. As such, we translated the semantics of the group announcement operator into the following checking function, shown in Algorithm \ref{alg:checkGroupAnn}.
 
 %Discuss optimizations in regards to non-epistemic formulas not changing valuation through announcements\\
 \begin{algorithm}
 	\caption{Check function for group announcement operator}
 	\label{alg:checkGroupAnn}
 	\begin{algorithmic}	
-		\Function{$check$}{$state, innerForm, model, coalition$}
+		\Function{$check_{[G]\varphi}$}{$state, innerForm, model, coalition$}
 		\State $contractedModel \gets$ \Call{$bisimContract$}{$model$}
 		\State $extensions \gets $\Call{$genAnnExts$}{$contractedModel, state, coalition$}
 		\ForAll {$extension$ in $extensions$}
@@ -286,5 +288,70 @@ Now that we have not only our bisimulation contracted model, but also a way to g
 \end{algorithm}
 
 Like we previously mentioned we here make sure the set of states passed to $bisimContract$ starts with the actual state we're checking our formula in, in order to simplify the visualization of our checking process. It should also be mentioned that the $check$ function that gets called is implemented as an abstract function overridden by each operator in our system and that Algorithm \ref{alg:checkGroupAnn} only shows the implementation for the group announcement operator. The $constrainMdlBy$ function used here is merely a special case of updating a model through announcing the set of states directly instead of announcing a formula and constraining our model to the set of states that satisfy the given formula. 
-%Not just after enumerating the set of extensions, regard them as constraints on our model
-%Generate all possible such constrained models
+
+\todo{Show algorithms for checking conjunctions, knowledge and public announcements}
+
+Now that we have presented our algorithm for checking group announcements, we will additionally present our checking algorithms for a few of the simpler operators as well. Starting out, we present Algorithm \ref{alg:checkConj} for checking conjunctions. As all of the non-epistemic operators can be checked in similar fashion with only minor tweaks to the algorithm, we will be skipping the rest of them and instead move on to the knowledge operator. 
+
+\begin{algorithm}
+	\caption{Check function for the conjunction operator}
+	\label{alg:checkConj}
+	\begin{algorithmic}
+		\Function{$check_{\varphi\wedge\psi}$}{$state, leftForm, rightForm, model$}
+		\State $leftSatisfied \gets $ \Call{$check$}{$state, leftForm, model$}
+		\If{$leftSatisfied$}
+			\State \Return \Call{$check$}{$state, rightForm, model$}
+		\Else
+			\State \Return $false$
+		\EndIf
+		\EndFunction
+	\end{algorithmic}
+\end{algorithm}
+
+Algorithm \ref{alg:checkKnowledge} describes how we check knowledge in our model checker. The $getIndishStates$ function we use here returns the set of states an agent considers indistinguishable from the given state, which is then looped over as we check whether the `inner' formula is satisfied in all these indistinguishable states.
+
+\begin{algorithm}
+	\caption{Check function for knowledge operator}
+	\label{alg:checkKnowledge}
+	\begin{algorithmic}
+		\Function{$check_{K}$}{$state, innerForm, agent, model$}
+		\State $indistinguishableStates \gets $ \Call{$getIndishStates$} {$state, agent$}
+		\ForAll {$indishState$ in $indishtinguishableStates$}
+			\If {!\Call {$check$}{$indishState, innerForm, model$}}
+				\State \Return $false$
+			\EndIf
+		\EndFor
+		\State \Return $true$
+		\EndFunction
+	\end{algorithmic}
+\end{algorithm}
+
+Finally, we also present Algorithm \ref{alg:checkPubAnn} for checking public announcements, which also serves to highlight a few interesting deviations 
+\todo{Skrive ferdig}
+
+\begin{algorithm}
+	\caption{Check function for public announcements}
+	\label{alg:checkPubAnn}
+	\begin{algorithmic}
+		\Function{$check_{[\varphi]\psi}$}{$state, announcement, innerForm, model$}
+		\State $updStates \gets List <State>$
+		\ForAll {$state$ in $model.states$}
+			\If {\Call {$check$}{$state, innerForm, model$}}
+				\State $updStates.add(state)$
+			\EndIf
+		\EndFor
+		\State $updEdges \gets List <Edge>$
+		\ForAll{ $edge$ in $model.edges$}
+			\If {$edge.state1 \in updStates$ and $edge.state2 \in updStates$}
+				\State $updEdges.add(edge)$
+			\EndIf
+		\EndFor
+		\State $updModel \gets$ \Call {$updateModel$}{$updStates, updEdges, agents$}
+		\State \Return \Call {$check$}{$state, innerForm, updModel$}
+		\EndFunction
+	\end{algorithmic}
+\end{algorithm}
+
+\question{Bruke $List<Foo>$ eller $Foo[~]$? Evt hva med $Map<State, State>$?}
+
+Note that we can also check if $state \not\in updStates$ and immediately return true if this is the case.

@@ -1,6 +1,6 @@
-\section{Formalizing the logic}\label{sec:theory}
+\section{Group Announcement Logic}\label{sec:theory}
 
-In this section we will introduce and discuss the various concepts and features of epistemic logic, starting by formally defining and explaining the most central concepts we will be working with. We will then present the language of Group Announcement Logic and the semantics behind it as we transition into our own theoretical work on exploring exploring its group announcement operator, which will lay the foundations for the implementation of our model checking tool that will be presented in the second half of this thesis.
+In this section we will introduce and discuss the various concepts and features of epistemic logic, starting by formally defining and explaining the most central concepts we will be working with. We will then present the language of Group Announcement Logic and aim to give the reader an understanding of the semantics behind, before we transition into our own theoretical work on exploring exploring its group announcement operator in the next chapter. This will lay the foundations for our implementation of the model checking tool that will be presented in the second half of this thesis.
 
 \todo{Flette sammen med kapittel 2 etter det er skrevet}
 
@@ -24,7 +24,6 @@ We will also frequently use $\rels$ as $s\rels_a t$, for some $a\in\ags$ to deno
 A simple practical example of an epistemic model could be to imagine someone that doesn't know whether or not it is raining outside. If we focus solely on whether or not it is in fact raining outside, we can denote this proposition as $p$, where $p = $``It is raining outside". Since this agent, $a$ does not know whether it is raining, this means that in their mind there must be at least two possible worlds, or states; one where $p$ is true, and one where $p$ is false which $a$ is unable to distinguish. If we label these states as $s_0$ and $s_1$, we end up with the model shown in Figure \ref{fig:basicEM}, where we use $\neg p$ to signify that $p$ is not true in $(M,s_1)$
 
 \begin{figure}[h]
-	\label{fig:basicEM}
 	\centering
 	\scalebox{1.9}{
 		\begin{tikzpicture}[scale = 2.0, every label/.append style = {font=\tiny}]	
@@ -36,6 +35,7 @@ A simple practical example of an epistemic model could be to imagine someone tha
 		\end{tikzpicture}
 	} %End scaling
 	\caption{A basic model with two states}
+	\label{fig:basicEM}
 \end{figure}
 
 \textit{Note that since we are working with S5 models, all nodes (states) also have reflexive edges to themselves, even if they are not explicitly drawn in these figures}
@@ -167,7 +167,6 @@ As bisimilarity will be quite central to our exploration of the semantics of the
 \end{definition} 
 
 \begin{figure}[h]
-	\label{fig:bisimmods}
 	\centering
 	\scalebox{1.8}{
 		\begin{tikzpicture}[scale = 1.0, every label/.append style = {font=\tiny}]	
@@ -187,6 +186,7 @@ As bisimilarity will be quite central to our exploration of the semantics of the
 		\end{tikzpicture}
 	} %End scaling
 	\caption{Two bisimilar, but structurally different models}
+	\label{fig:bisimmods}
 \end{figure}
 
 Building on the concept of bisimilar states, the bisimulation contraction of a model $\M$ is the smallest bisimilar structure to $\M$, obtained by merging each set of bisimilar states in $\M$ into a single state. 

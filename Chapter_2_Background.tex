@@ -1,6 +1,63 @@
 \section{Background}\label{sec:back}
 
-In this chapter we will give the reader some insight into the background of these systems of logic while determining the state of the art, before introducing various concepts and terms that will be used later on in this thesis.
+Innholdsfortegnelse:
+
+\begin{itemize}
+
+	\item{Hva er modellsjekking?}
+	
+	\begin{itemize}
+		\item{I en dagligdags kontekst brukes til alt mulig, mer enn bare logikk, økonomi, spillteori, forhandlinger pluss mer}
+		\item{Diskutere i mer abstrakt kontekst, glidende overgang fra lister av flyavganger og reiseplanleggere (Kan svare på spørsmål om 'finnes det et ledig fly fra Bergen til Oslo den 16?', til mer strukturerte systemer som databaser, med spørrespråk som SQL hvor vi kan utforme våre spørringer, til faktisk logikk.}
+		\item{Logikere flest vil nok alikevel ikke anerkjenne reiseplanleggere (Momondo) som reelle modellsjekkere}
+	\end{itemize}
+	
+	\item{Definere modellsjekking / modellsjekkere}
+	
+	\item{Består av tre komponenter}
+	\begin{itemize}
+		\item{En modell som kan beskrive noe vi er interessert i (Database, tabell med flyavganger, logiske strukturer, Kripke)}
+		\item{Et språk som kan formulere spørringer eller påstander om denne modellen (SQL, naturlig språk, GAL)}
+		\item{En mekanisme som kan besvare spørringene, semantikk, relasjon (Momondo, databaseverktøy, semantikk + tilfredsstillelsesrelasjon, ($\models$)})
+	\end{itemize}
+	
+	\item{Hvorfor modellsjekking?}
+	
+	\begin{itemize}
+	
+		\item{Brukes til å bedre vår forståelse av abstrakte strukturer og systemer (Inkludert logikk?)}
+		
+		\begin{itemize}
+			\item{Spillteoretiske modeller brukes av økonomer til å forstå og utforske markedsstrategier}
+			\item{Lang tradisjon av bruk i computer science til formell verifikasjon av programkode, nyttig i høyrisiko-sammenheng, som styringssystem på romferger, firmware på medisinsk utstyr, militære formål}
+			\item{Systemer blir mer komplekse, involverer flere uavhengige agenter i distribuerte systemer, hvordan kommuniserer slike agenter? Finnes det en sekvens med handlinger som gjør at et multi-agent system går i lås (deadlocks)?}
+			\item{Modellsjekking kan hjelpe utforske slike problemstillinger}
+			\item{Nevne CTL som eksempel på bruk av logikk i slike sammenhenger}
+			\item{Nevne AT(E?)L i kontekst av spillteoretiske modeller?}
+		\end{itemize}
+
+	\todo{Prøve å finne eksempel på hvorfor DEL/PAL/GAL}
+
+	\end{itemize}
+
+	\item{Nå som nytten av modellsjekking er etablert, hvorfor modellsjekkere?}
+
+	\begin{itemize}
+		\item{Stor kompleksitet, urimelig å gjennomføre manuellt, 700 sider med flyavganger, finnes det et ledig fly fra Bergen til Oslo uten mellomlandinger?}
+		\item{Eksterne værktøy kan bidra, reiseplanleggere som Momondo, eksekveringsmotorer for spørrespråk som SQL, modellsjekkere for formelle logikker}
+		\item{Feltet i dag (State of the art), nevne eksisterende verktøy, DEMO og SmcDEL, påpeke at ingenting for GAL (enda)}
+		\item{Hva kan jeg bidra med?}
+		\begin{itemize}
+			\item{Ingen modellsjekkere for GAL}
+			\item{Pedagogisk vinkling, verdi av grafisk verktøy i undervisningskontekst}
+			\item{Eksisterende verkøy har dårlige brukergrensesnitt, krever ekspertkompetanse for å ta i bruk, stort forbedringspotensiale}
+			\item{Forenkle læringsprosessen gjennom å visualisere abstrakte konsepter på en intuitiv måte}
+		\end{itemize}
+		
+	\end{itemize}
+	
+\end{itemize}
+
 
 %"Information is communicated, so knowledge and belief are by no means static. Not surprisingly, many logicians have taken this into account. In the context of epistemic logic, there are many different approaches. Dynamic epistemic logic is an umbrella term for a number of extensions of epistemic logic with dynamic operators that enable us to formalize reasoning about information change. It came forth from developments in formal linguistics, computer science, and philosophical logic."\cite{Ditmarsch2007}
 

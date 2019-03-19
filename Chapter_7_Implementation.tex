@@ -5,9 +5,9 @@ In this chapter we will discuss the various tools and technologies that we ended
 Starting off with the programming language we went with, our choice was Kotlin. Kotlin is a new and exiting language on the JVM that has gotten a lot of attention in the recent years after Google announced they would make it an official language for Android development during their I/O conference back in 2017. While the language has since `branched out' with JavaScript transpilers and a native compiler, letting developers target different platforms, I would argue that one of the main strengths of the language is that despite being relatively young, it is able to tap into the vast number of libraries and tools written for the JVM by compiling down to Java-bytecode, allowing for full interoperability with Java. Among the other benefits of the language's relatively young age, is that it has been able to draw inspiration from other modern giving it features such as type inference, string interpolation and default values. This means that lends itself very well towards writing functional code despite being object oriented, through shorthands for lambda expressions, support for proper function types and distinctions between mutable and immutable structures and variables. As an added bonus, the language is also backed heavily by JetBrains, well known for their suite of IDEs and plugins such as IntelliJ, PyCharm and ReSharper, so the language also has first-class tooling support, making it easy to pick up. 
 
 \begin{figure}[h]
-	\label{fig:StatFragSnip}
 	\includegraphics[width=\textwidth]{StateFragmentSnippet.png}
 	\caption{Code handling how the UI components representing states are built. Note the conciseness due to implicit contexts.}
+	\label{fig:StatFragSnip}
 \end{figure}
 
 For these reasons, we chose to implement our model checker in Kotlin, as prior to this project, most of my programming experience came from Java and its many libraries and as such, moving to a language with a far more concise syntax but still being able to lean on my previous experience was an excellent opportunity to learn something new. Going back to Java's wealth of libraries, the choice of GUI library to construct our user interface in fell on the \textit{de facto} standard Java GUI library, JavaFX, or more precisely; a Kotlin wrapper for it called TornadoFX \footnote{Library homepage at: \url{https://tornadofx.io}}. Our reasons behind choosing TornadoFX is that while JavaFX is a widely used and mature library with powerful features, we also feel its usage tends to produce somewhat clunky and verbose code. JavaFX does admittedly provide a solution to this; dumping most of the layout, styling and positioning of components into specialized XML-files. While this helps clean up classes representing UI-components however, it also makes dynamic component generation clumsier and tends to abstract away the component hierarchy in ways that makes it harder to reason around its structure. TornadoFX on the other hand, being a Kotlin library is able to present a much cleaner API by utilizing Kotlin features such as lambda expressions attached to receivers in order to create composable builder functions which generate your JavaFX component hierarchy in an imperative fashion. Additionally, the wrapper also has excellent and concise shorthands for creating dynamic bindings between UI components and observable sets of data, which we ended up using all throughout the application. However, I would say our biggest reason for choosing TornadoFX is probably how its composable builder functions allow you to circumvent the normally inverse order of declaration and creation of UI components compared to their order in the component hierarchy, which can be seen in Figure \ref{fig:StatFragSnip}.
@@ -18,9 +18,9 @@ For these reasons, we chose to implement our model checker in Kotlin, as prior t
 
 Besides creating an understandable user interface another large challenge we needed to solve was how to convert the plain text the user types in into data structures representing formulas to check. For this, we used a tool called ANTLR (ANother Tool for Language Recognition)\footnote{\url{http://www.antlr.org/}}. ANTLR is a powerful parser generator which based off of a set of grammatical rules, can be used to generate parsers which implement these rules. These grammatical rules can be broadly split into parser and lexer rules. Lexer rules are the low-level rules which define how the tool should convert individual characters or short strings of characters into lexical tokens which are then used by the more high-level parser rules to define how ANTLR should assemble these tokens together again. For a more concrete example, we have the entirety of \cname{}'s grammatical rules pictured in Figure \ref{fig:grammar}. Here we can see how this simple set of lexical rules handle converting symbols into tokens representing the various operators in our language, but also how our set of parser rules define all legal ways of combining these symbols into formulas. 
 \begin{figure}[h]
-	\label{fig:grammar}
 	\includegraphics[width = \textwidth]{GALGrammar.png}
 	\caption{Grammatical rules for parsing formulas in \cname with ANTLR.}
+	\label{fig:grammar}
 \end{figure}
 
 For comparison, the language described by this ANTLR grammar can also be expressed as the following BNF (terminal symbols are underlined):
@@ -43,9 +43,9 @@ $$
 One thing to note in Figure \ref{fig:grammar} are the symbols used to represent negation, conjunction and disjunction. As previously mentioned, since the commonly used symbols for these operators do not exist on normal keyboards, the UI would either need extra buttons to facilitate inserting these symbols or use more easily accessible surrogate symbols. Another small concession I had to make in order to differentiate between agents and propositions, was to require that agent names be capitalized, as I would otherwise have to resort to using different symbols to differentiate between regular public announcements and group announcements. 
 
 \begin{figure}[h]
-	\label{fig:formulaImpl}
 	\includegraphics[width=\textwidth]{FormulaImpl.png}
 	\caption{Snippet showing how various operators are implemented}
+	\label{fig:formulaImpl}
 \end{figure}
 
 The parser that ANTLR generates from this simple grammar is then used to convert the user's plain text input into instances of our Kotlin classes which represent the various operators in our language. An interesting thing to note here however is that not only does it create instances of our operators, but it also instantiates them in order of traversal as it builds the formula tree, conserving the structure of this tree as it is rebuilt using our Kotlin-implementations of the operators. One of the more elegant aspects of our design is how these operators were implemented; with each operator extending an abstract formula class and simply overriding it's `check'-function with their own semantics, as can be seen in Figure \ref{fig:formulaImpl}. Also note how the constructors of each operator also takes other formulas as their parameters, allowing us to directly implement the BNF definition of GAL presented earlier through constructor typing alone.
@@ -64,16 +64,22 @@ We also chose to flip the valuation function by letting states hold a reference 
 Going back to our presentation of \cname{} in the previous chapter, we described that the tool provides two main modes of checking formulas, which we will now discuss the implementation of. The first and simplest of these modes is simply checking which of the states in the user's model satisfy the input formula. With our implementation of formulas, we can simply do this by invoking the formula's check-function on each state in our model, styling the state-component based on the outcome of this checking, as can be seen in Figure \ref{fig:CheckingFunction}. We also previously described how \cname{} allows its user to mouse over the various subformulas in order to check how they affect the valuation of their containing formula. We implemented this by tying each symbol in the displayed formula to the subformula it represents and then calling the same check-formula with this subformula.
 
 \begin{figure}[h]
-	\label{fig:CheckingFunction}
 	\includegraphics[width=\textwidth]{CheckingFunction.png}
 	\caption{Function responsible for highlighting which states in our model satisfy the input formula}
+	\label{fig:CheckingFunction}
 \end{figure}
 
 How step-by-step visualization works is somewhat more involved. A high-level description of how it is implemented is that the `debugger' hooks into the $check$ function of the formula, and logs each step of the checking process. Looking back at Figure \ref{fig:formulaImpl}, this can be seen through our calls to \textit{createDebugEntry}, which is responsible for logging the valuation of each operator in the user's formula before and after every call to this $check$ function.
 
 Each log then carries information about what the valuations of each operator was at that point in the process, so that this checking process can be played back and visualized in the form of showing the various operators change color as their valuations become known. 
- 
 
+Briefly touching upon saving and loading of models as mentioned at the end of the last chapter, as our models are plain Kotlin (and by extension Java, as Kotlin is fully interoperable with Java) objects, reading and writing them to files is simply a matter of using the built-in tools in the Java library to serialize them and write them to file, as seen in Figure \ref{fig:serialization}. While using the JVM library for writing and reading models from files saved us a lot of time, it does however also mean that the models are written in a plain binary format. While it would have been nice to store our models in a more widely-used format so that more complex models could be visualized and edited in more powerful graph editing tools such as Gephi\footnote{https://gephi.org/}, this was left as future work since I estimated it would take too long to implement compared to the value it would provide.
+
+\begin{figure}
+\includegraphics[width=\textwidth]{SerializationCode.png}
+\caption{Code behind reading and writing models to file}
+\label{fig:serialization}
+\end{figure}
 
 %Features - should explain how each of these are implemented \\\\
 

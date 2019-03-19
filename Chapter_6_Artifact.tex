@@ -43,9 +43,9 @@ In this chapter we will present our own implementation of a model checker for Gr
 One of the big questions that needed to be answered when we started building \cname{} was how we wanted to not just present and visualize these highly abstract models, but also allow the user to manipulate them in a way that would be intuitive and easy to grasp. As I had previously used a tool called JFLAP\footnote{www.jflap.org} with great success when teaching students as a TA about Turing machines and finite state automata (FSAs) I ended up drawing most of my inspiration from it when drawing up my initial sketches for how I imagined my own tool might look. While my own experience with JFLAP is mostly limited to visualizing, editing and playing with Turing machines and finite state automatas, it is a fairly sophisticated package of graphical tools covering also covering many other concepts of formal languages and automata theory. JFLAPs editor is relatively simplistic, but it still helped my own and my students' understanding of FSAs tremendously by allowing us to interact and play with what is otherwise a really abstract concept and as such, I wanted to see if I could create a similarly potent learning aid for epistemic logic. 
 
 \begin{figure}[H]
-	\label{fig:JFLAP_basic illustration}
 	\includegraphics[width= \textwidth]{JFLAPbasicIllustration.PNG}
 	\caption{A basic two-state turing machine}
+	\label{fig:JFLAP_basic illustration}
 \end{figure}
 
 %When I took the same course myself the year before I became a TA in it, most of the students, myself included found Turing machines to be a really hard and abstract concept to grasp as we were simply explained how they worked and then instructed to write instructions that would perform certain basic tasks using pen and paper alone. Obviously, this left us without any way to check whether or not our 
@@ -60,9 +60,9 @@ Although finite state automatons and epistemic logic might initially seem relati
 
 
 \begin{figure}[H]
-	\label{fig:basicModelVis}
 	\includegraphics[width= \textwidth]{BasicModel.png}
 	\caption{A basic model, visualized in \cname}
+	\label{fig:basicModelVis}
 \end{figure} 
 
 %Mention basic usage, how one draws models, example blackboard, simple, intuitive, easy
@@ -76,7 +76,6 @@ After the user creates their model, the next step is to start checking formulas 
 
 \begin{table}[H]
 \centering
-\label{tbl:symbolReplacements}
 %\resizebox{\textwidth}{!}{%
 \begin{tabular}{@{}lcc@{}}
 \toprule
@@ -91,6 +90,7 @@ Group Announcement &  $[\{ann,bob\}]\varphi$  & $[Ann,Bob]\varphi$ \\ \bottomrul
 \end{tabular}%
 %}
 \caption{Table of operators and their symbols in \cname{}}
+\label{tbl:symbolReplacements}
 \end{table}
 
 %Include BNF as table? Save it for ANTLR section
@@ -100,11 +100,11 @@ Group Announcement &  $[\{ann,bob\}]\varphi$  & $[Ann,Bob]\varphi$ \\ \bottomrul
 
 When the user finishes typing in their formula, the tool checks their formula against each state in their model and colors each state based on whether or not the user's formula is satisfied in that state. However, in addition to translating the user's input into a legal formula and showing which states of the model satisfy the formula, \cname{} also lets the user hover over parts of their original formula in order to check the valuation of its subformulas, which can be seen in Figure \ref{fig:labelHover}. The idea here was that by allowing the user to quickly break formulas apart and see how their various subformulas change the valuation of their containing formula the way they do, I could visualize the semantics behind each operator in our language in a manner that might make the logic more enjoyable to learn. 
 
-%\todo{replace image with one that shows mouse pointer}
+\todo{replace image with one that shows mouse pointer}
 \begin{figure}[H]
-	\label{fig:labelHover}
 	\includegraphics[width= \textwidth]{LabelMouseOver.png}
 	\caption{Illustration of mousing over interactive formula display}	
+	\label{fig:labelHover}
 \end{figure}
 
 
@@ -117,18 +117,18 @@ Naturally, I wanted to create something similar for my own tool as well, somethi
 Note that in addition to this log, the program also visualizes which (sub)formulas are being checked against the various states as colorized labels that change color as the user steps through their formula based on the valuation of the operators the labels represent. 
 
 \begin{figure}[H]
-	\label{fig:stepperBasic}
 	\includegraphics[width= \textwidth]{SteppingBasicExample.png}
 	\caption{Illustration of using stepping functionality in \cname{}}
+	\label{fig:stepperBasic}
 \end{figure}
 
 
 Returning to our previous comparison between the stepper in JFLAP and the one sought to implement, there is still an interesting challenge. While the instruction sets and states of a Turing machine are static, the epistemic models we use in dynamic epistemic logic are naturally quite dynamic, and can be updated based on public announcements in PAL or more complexly, group announcements in GAL. I chose to represent these model updates by graying out the states and edges that were removed by the update and to update which states should be `hidden' based on which branch in the tree-like structure of the original formula the user is currently stepping through. Naturally, the tool also supports formulas with multiple announcements nesting them in any fashion the language allows, always visualizing the relevant sub-model that formulas are being checked against, an example of which can be seen in Figure \ref{fig:stepperUpdates}. Note that \cname{} also generates formula labels for which subformulas under knowledge or announcement operators have been checked in the various states, so that the user can immediately see why for example, an agent does not know something, or why a state has been filtered out in a model update.
 
 \begin{figure}[H]
-	\label{fig:stepperUpdates}
 	\includegraphics[width= \textwidth]{SteppingChainedAnnouncements.png}
 	\caption{Visualization of the effects of chained public announcements in \cname{}}
+	\label{fig:stepperUpdates}
 \end{figure}
  
 
@@ -143,28 +143,25 @@ Returning to our previous comparison between the stepper in JFLAP and the one so
 %Mention deviation from logic here? Flipped valuation function, 
 
 \subsection{Visualizing group announcements}
-%Move to wayyyy later
 
 Now that I have presented most of the tool I have created and how it solves the various challenges of visualizing the process of checking formulas containing the other operators in our language, it is time to discuss group announcements. As our motivation behind creating \cname{} was to create a learning tool that could help new logicians understand how the semantics of GAL work, being able to generate examples which highlight interesting properties of our models is highly important. As such, \cname{} was designed from the ground up to be able to trace its steps through the model checking process so that it can also display each step of this process in an intuitive manner, which can be seen in our previous figures. Elaborating on the logging process mentioned before behind this tracing, the tool also keeps track of subformulas and formula depth as it goes through the operators. The reason behind keeping track of this in the logs was to create a more easily navigable tree-like structure, as the number of steps required to check a formula containing group announcements can quickly explode. Because of this, I wanted to give the user the ability to skip through chunks of the process they might not be particularly interested in. This tree-structure allows them to for example view each state the tool checks against a particular knowledge operator, or even skip through each of the possible updated models a coalition can reduce a model to through their announceable extensions, without having to step through the checking of the inner formula every time. 
  
 \begin{figure}[]
-	\label{fig:basicGalChecking}
 	\includegraphics[width= \textwidth]{MCGALBasicChecking.png}
 	\caption{Checking a basic group announcement formula in MCGAL}
+	\label{fig:basicGalChecking}
 \end{figure}
 
 \todo{Flette inn med resten av det over}
 
 As the tool provides a view of the model and keeps track of what the model it is currently checking against looks like, it can also visualize the effects of announcing multiple different formulas. This means the tool can also visualize the result of constraining the model to the various formula extensions a coalition can announce, which is what is being displayed in Figure \ref{fig:basicGalChecking}. In this example, we are checking whether the formula $\neg [Bob]\neg K_{Ann}[p]$ holds in state s3 of our model. The formula roughly translates to: `It is not the case that Bob is unable to make Ann know $p$' or more simply in its dual form: `Bob is able to make Ann know p'. From the visualization of our model in Figure \ref{fig:basicGalChecking} we can see that since Bob is able to reduce the model to only states where $p$ holds, Ann also trivially knows that $p$ holds in this updated model, satisfying our original formula. In this somewhat trivial example, the tool ended up only having to try announcing a single formula extension before it found an extension that made our original formula true. If we were to check a more complex formula however, it might end up checking many different announcements, each generating a different updated model after its announcement which the tool will helpfully visualize, giving the user insight into a coalition's capabilities. Note that the previous example could also have been made easier by rewriting the formula as $\dia{Bob}K_{Ann}[p]$, but unfortunately the tool does not (yet) support diamond operators. 
 
-%Admittedly UX and design in general is not my strong suit and improving the interface is left as future work
-%They would additionally be able to type in a formula and then have the states in their model light up, highlighting which states satisfy the given formula. 
+Last, but certainly not least, \cname{} also facilitates saving and loading of models. As our tool is intended to be used in educational settings, making lecturers able to create exercises for their students is highly valuable. One example of such usage would be creating and handing out an incomplete model, where the students would have to `complete' the model by either adding states or changing the indistinguishability relations for their agents in order to give this model some specific property. The lecturer could then load the models that their students have handed in to verify them. As I used a similar approach to great success when introducing JFLAP to my students while teaching them automata theory and turing machines, I know how useful this feature can be. As such I wanted to make sure that my own tool could be used the same way.
 
-%Another key feature of the application is that it also helps the user keep track of which formulas are being checked in the various states, by displaying the formulas as a list next to each state and coloring them by their valuation as the user steps through the checking process. In addition to simply checking which states in their model satisfy their formula, the user can also look more closely at why a formula is or is not satisfied in a given state. In order to help the user with this, the application visualizes the checking process step-by-step, one operator and state at a time, with progress being displayed by updating the color of each operator in the formula according to their current valuation.
+%Saving / loading, distribuering av eksempler
+%Oppgaver som kan gis ut, delvise modeller som skal fullføres av studenter og leveres inn
 
 %Figure \ref{fig:debugExmpl} shows a screenshot of \cname{} in action, where the user is stepping through the process of checking a specific formula against a state in their model, having the tool visualize whether or not their formula holds. It also shows how the application breaks down epistemic formulas into sub-formulas and displays them next to each state they have to be checked in. Additionally, the application also visualizes the current valuation of each operator and proposition in the formula as you step through the checking process, as can be seen from the red and green parts of the formulas being checked, as well as the Val (valuation) column in the debugger tab. 
-
-\todo{Vise eksempler på visualisering av kunnskap de re vs de dicto. Forklare hvorfor skillet er interessant. Burde være mulig å bare knabbe både formler og modeller fra GAL-paperene (de re blir mest sannsynlig for klumpete å vise)}
 
 %Something something easier to show if we supported formula templates, future work
 %Highlight difference between being able to achieve something and knowing that you are able to achieve something
