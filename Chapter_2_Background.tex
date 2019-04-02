@@ -2,6 +2,35 @@
 
 Innholdsfortegnelse:
 
+\todo{Write snazzy intro}
+
+As this thesis is mainly concerned with the topic of model checking, we will start with a gentle discussion of what this actually is. While the concept of model checking is most frequently associated with logic, if we examine it in an everyday context, aspects of other fields such as game theory in relation to economics or .
+
+
+ most tasks around us involve aspects of this in one way or another. 
+Examined in an everyday context, the concept of model checking is all around us, frequently used 
+
+As such, we would argue that there exists a `sliding scale' of formality in regards to model checking ranging from lists of plane departures and trip planners, which can be used to answer questions along the lines of `is there a direct flight between Bergen and Oslo departing on the 16th?', to more structured systems such as databases 
+
+However, as most logicians probably would not recognize trip planners such as Momondo or [Insert tool here] as proper model checking tools, we would like to present a somewhat loose and abstract definition of model checking and model checkers. For us, a model checker consists of the following three main components:
+
+	\begin{itemize}
+		\item{A model, capable of modeling something we are interested in. This could be virtually anything from our previously mentioned flight schedules, databases or more formal models as used in game theory or the Kripke structures we will be using in this thesis.}
+		\item{A language capable of formulating queries or propositions in regards to these models. Examples here includes natural language, more formal query languages such as SQL or various logics such as Public Announcement Logic or Computation Tree Logic.}
+		\item{A mechanism which can answer these queries in some fashion. One such mechanism would be the travel planner from our previous example, the tools that execute our SQL, or in our case, the semantics behind our logic and it's satisfaction relation. }
+	\end{itemize}
+	
+Having briefly touched upon what model checking is, it is time to discuss why model checking is needed and what makes it so useful. 
+Model checking is a way for us to further our understanding of highly complex and often abstract systems or structures by formalizing ways of analyzing them. 
+
+While we previously mentioned economists using game theory to analyze decision making in various business scenarios, there is also a long tradition in computer science of using model checking to formally verify that hardware and software meets certain requirements. While these formal verification methods often require major investments in time and resources, they still have their place in high-risk contexts, where the cost of failure is particularly high, or human lives are at stake. 
+
+%CPU verification, guidance systems, 
+%Foo mentions case of Therac-80 machines which had a software bug causing several patients to receive fatal overdoses of radiation upon treatment. 
+
+
+While simpler logics such as Computation Tree Logic (CTL) and something something are most commonly in used for practical applications of model checking such as hardware correctness verification and more complex forms of logic such as Public Announcement Logic, Alternating Time Epistemic Logic or Group Announcement Logic are seen as more `academically interesting', it is worth noting that these simpler logics were also once regarded as academic pursuits. As systems grow increasingly more complex and encompass greater numbers of autonomous agents 
+
 \begin{itemize}
 
 	\item{Hva er modellsjekking?}
@@ -21,6 +50,8 @@ Innholdsfortegnelse:
 		\item{En mekanisme som kan besvare spørringene, semantikk, relasjon (Momondo, databaseverktøy, semantikk + tilfredsstillelsesrelasjon, ($\models$)})
 	\end{itemize}
 	
+	\item{For hensyns skyld så er det imidlertid lurt å begrense diskusjonen til mer formelle systemer som kan brukes til noe praktisk}
+	 
 	\item{Hvorfor modellsjekking?}
 	
 	\begin{itemize}
