@@ -1,95 +1,116 @@
 \section{Background}\label{sec:back}
 
-Innholdsfortegnelse:
+\subsection{Motivation}
 
-\todo{Write snazzy intro}
+%\todo{Write sub-section on inspiration for tool about JFLAP, educational benefits ect}
 
-As this thesis is mainly concerned with the topic of model checking, we will start with a gentle discussion of what this actually is. While the concept of model checking is most frequently associated with logic, if we examine it in an everyday context, aspects of other fields such as game theory in relation to economics or .
+In 2010, Ågotnes et al. published a paper on their extension of Public Announcement Logic called Group Announcement Logic \cite{Agotnes2014}.\todo{Insert clearly missing sentence} Having previously used other visual tools such as JFLAP\footnote{Available from: \url{http://www.jflap.org/}} to aid student learning while teaching courses and seeing how helpful it can be to visualize the way something works, I wanted to create something similar that could aid students in learning how group announcement logic works. 
+
+Looking at other branches of logic such as Computational Tree Logic it is also clear that the field of model checking epistemic logics such as GAL lags far behind. 
+
+While there does exist model checkers for similar kinds of logic such as DEMO\footnote{Haskell source files and user guides available from: \url{https://homepages.cwi.nl/~jve/software/demo_s5/}} for Public Announcement Logic, in my opinion DEMO would not lend itself very well to teaching. The reason for this is that as a command-line tool it requires the user to structure their models as plain sets of numbers and letters through the command line rather than let them see and build their models in a more easily understood manner. As such we not only wanted to make a model checker that supports group announcement logic, but also make it useful in an educational context, by making able to present how the various operators in the language work in a more visual manner. There is also an interesting theoretical challenge involved in model checking GAL, as the semantics behind the logic's group announcement operator involve quantifying over an infinite set of formulas that a given coalition can announce. To this end, we will present an algorithm for enumerating this infinite set of formulas by exploring the properties of minimal bisimilar structures and grouping these formulas by which states in our structures they are satisfied in. 
+
+As this thesis is mainly concerned with the topic of model checking, we will start with a gentle discussion of what this actually is. 
+
+\subsection{Model checking}
+
+Model checking is a way for us to further our understanding of highly complex and often abstract systems or structures by formalizing ways of analyzing them. Generally it involves the process of verifying whether or not our model exhibits some property. In order to do so however, we require formal ways of describing our models as well as the properties we are interested in checking if it has. For this, we use varying types of logic to express ourselves. Depending on the type of logic we are working with, the models are typically represented as Kripke structures which will be discussed later, or in more purely algorithmic forms.
+
+A less abstract example that also highlights the more practical usages of model checking is its use in formal software / hardware verification. Model checking has a rich tradition in the field of computer science and 
+in their book on model checking, Clarke et. al \cite{Clarke1999} refer to the case of the Ariane 5 rocket as an example of why we need formal methods for verifying software and hardware integrity. This example, where the rocket ended up exploding shortly after takeoff due to a conversion error in the software controlling the guidance system, highlights just one of many situations where we are forced to rely on systems to carry out tasks of critical importance to us. As these systems grow not just in complexity, but also in importance and their effects on our daily lives, it also becomes steadily more important to improve our methods of verifying the behavior of these systems. 
+
+Something something check whether or not there exists a sequence of actions that can be taken which might make a distributed system deadlock. 
+Something something one of the many measures taken to prevent similar incidents from occurring during future launches was the application of formal software verification techniques to prevent similar errors.
+
+Something something, obviously these tasks are not done by hand, which is where tools such as model checkers come in. By automating the process of checking / verifying properties of our software we can throw huge amounts of computational power at checking something something. In order to benefit from this model checking however, we require precise models, again requiring understanding of how these models work. This is 
+
+%Foo mentions case of Therac-25 machines which had a software bug causing several patients to receive fatal overdoses of radiation upon treatment due to a concurrency error in its software. 
+
+Something something usage of these logics
 
 
- most tasks around us involve aspects of this in one way or another. 
-Examined in an everyday context, the concept of model checking is all around us, frequently used 
+While simpler logics such as Computation Tree Logic (CTL) and Linear time Temporal Logic (LTL) are among the most commonly used logics \todo{Find supporting claim} for practical applications of model checking such as hardware correctness verification and more complex forms of logic such as Public Announcement Logic, Alternating Time Epistemic Logic or Group Announcement Logic are seen as more `academically interesting', it is worth noting that these simpler logics were also once regarded as academic pursuits. As systems grow increasingly more complex and encompass greater numbers of autonomous agents something something could be more easily represented through richer logics that factor in the `knowledge' of each agent in the system. Here we have epistemic logic and its many extensions which typically incorporate ways of updating this knowledge, which additionally enables us to reason around how these agents can interact with one another.
 
-As such, we would argue that there exists a `sliding scale' of formality in regards to model checking ranging from lists of plane departures and trip planners, which can be used to answer questions along the lines of `is there a direct flight between Bergen and Oslo departing on the 16th?', to more structured systems such as databases 
-
-However, as most logicians probably would not recognize trip planners such as Momondo or [Insert tool here] as proper model checking tools, we would like to present a somewhat loose and abstract definition of model checking and model checkers. For us, a model checker consists of the following three main components:
-
-	\begin{itemize}
-		\item{A model, capable of modeling something we are interested in. This could be virtually anything from our previously mentioned flight schedules, databases or more formal models as used in game theory or the Kripke structures we will be using in this thesis.}
-		\item{A language capable of formulating queries or propositions in regards to these models. Examples here includes natural language, more formal query languages such as SQL or various logics such as Public Announcement Logic or Computation Tree Logic.}
-		\item{A mechanism which can answer these queries in some fashion. One such mechanism would be the travel planner from our previous example, the tools that execute our SQL, or in our case, the semantics behind our logic and it's satisfaction relation. }
-	\end{itemize}
-	
-Having briefly touched upon what model checking is, it is time to discuss why model checking is needed and what makes it so useful. 
-Model checking is a way for us to further our understanding of highly complex and often abstract systems or structures by formalizing ways of analyzing them. 
-
-While we previously mentioned economists using game theory to analyze decision making in various business scenarios, there is also a long tradition in computer science of using model checking to formally verify that hardware and software meets certain requirements. While these formal verification methods often require major investments in time and resources, they still have their place in high-risk contexts, where the cost of failure is particularly high, or human lives are at stake. 
-
-%CPU verification, guidance systems, 
-%Foo mentions case of Therac-80 machines which had a software bug causing several patients to receive fatal overdoses of radiation upon treatment. 
+The logic this thesis will be working with, group announcement logic, is also one of these extensions of epistemic logic, but in addition to reasoning around information change also allows us to reason around what groups of these agents can accomplish by working together. In the following sections we aim to give the reader some insight into this logic as we work with its definitions towards something something tool.
 
 
-While simpler logics such as Computation Tree Logic (CTL) and something something are most commonly in used for practical applications of model checking such as hardware correctness verification and more complex forms of logic such as Public Announcement Logic, Alternating Time Epistemic Logic or Group Announcement Logic are seen as more `academically interesting', it is worth noting that these simpler logics were also once regarded as academic pursuits. As systems grow increasingly more complex and encompass greater numbers of autonomous agents 
+\todo{Skrive om / kaste resten av det som uansett blir presentert i starten av neste seksjon}
+
+With model checking utilities being such useful tools for exploring the properties of more complex models, it should come as no wonder that there exists plenty of model checkers out there for various forms of logic. Most traditional model checkers however focus on answering simple yes or no questions in regards to whether something is true or not. One of the closest examples of this is DEMO\_S5 for dynamic epistemic logic (DEL), being a command-line application that lets the user types in their formulas and check it against models formatted as long strings of text. We aim to create a tool which can assist users in understanding how these systems work by providing a graphical editor that can visualize both the models themselves as well as the checking process.
+
+%Mention Tarski's World as example of educational software\\
+%Mention DEMO and SMCDEL as examples of model checkers in epistemic logic.\\
+%Highlight DEMO's usability problem, shitty UI\\
+%Explain how \cname{} will attempt to improve this\\
+
+%We will introduce a model checking tool 
+%\todo{Mention Fitch, DEMO, SMCDEL++ and compare in terms of usability and goal}
+
+
+\subsection{Structure}
+
+This paper is divided into the following sections: 
 
 \begin{itemize}
-
-	\item{Hva er modellsjekking?}
-	
-	\begin{itemize}
-		\item{I en dagligdags kontekst brukes til alt mulig, mer enn bare logikk, økonomi, spillteori, forhandlinger pluss mer}
-		\item{Diskutere i mer abstrakt kontekst, glidende overgang fra lister av flyavganger og reiseplanleggere (Kan svare på spørsmål om 'finnes det et ledig fly fra Bergen til Oslo den 16?', til mer strukturerte systemer som databaser, med spørrespråk som SQL hvor vi kan utforme våre spørringer, til faktisk logikk.}
-		\item{Logikere flest vil nok alikevel ikke anerkjenne reiseplanleggere (Momondo) som reelle modellsjekkere}
-	\end{itemize}
-	
-	\item{Definere modellsjekking / modellsjekkere}
-	
-	\item{Består av tre komponenter}
-	\begin{itemize}
-		\item{En modell som kan beskrive noe vi er interessert i (Database, tabell med flyavganger, logiske strukturer, Kripke)}
-		\item{Et språk som kan formulere spørringer eller påstander om denne modellen (SQL, naturlig språk, GAL)}
-		\item{En mekanisme som kan besvare spørringene, semantikk, relasjon (Momondo, databaseverktøy, semantikk + tilfredsstillelsesrelasjon, ($\models$)})
-	\end{itemize}
-	
-	\item{For hensyns skyld så er det imidlertid lurt å begrense diskusjonen til mer formelle systemer som kan brukes til noe praktisk}
-	 
-	\item{Hvorfor modellsjekking?}
-	
-	\begin{itemize}
-	
-		\item{Brukes til å bedre vår forståelse av abstrakte strukturer og systemer (Inkludert logikk?)}
-		
-		\begin{itemize}
-			\item{Spillteoretiske modeller brukes av økonomer til å forstå og utforske markedsstrategier}
-			\item{Lang tradisjon av bruk i computer science til formell verifikasjon av programkode, nyttig i høyrisiko-sammenheng, som styringssystem på romferger, firmware på medisinsk utstyr, militære formål}
-			\item{Systemer blir mer komplekse, involverer flere uavhengige agenter i distribuerte systemer, hvordan kommuniserer slike agenter? Finnes det en sekvens med handlinger som gjør at et multi-agent system går i lås (deadlocks)?}
-			\item{Modellsjekking kan hjelpe utforske slike problemstillinger}
-			\item{Nevne CTL som eksempel på bruk av logikk i slike sammenhenger}
-			\item{Nevne AT(E?)L i kontekst av spillteoretiske modeller?}
-		\end{itemize}
-
-	\todo{Prøve å finne eksempel på hvorfor DEL/PAL/GAL}
-
-	\end{itemize}
-
-	\item{Nå som nytten av modellsjekking er etablert, hvorfor modellsjekkere?}
-
-	\begin{itemize}
-		\item{Stor kompleksitet, urimelig å gjennomføre manuellt, 700 sider med flyavganger, finnes det et ledig fly fra Bergen til Oslo uten mellomlandinger?}
-		\item{Eksterne værktøy kan bidra, reiseplanleggere som Momondo, eksekveringsmotorer for spørrespråk som SQL, modellsjekkere for formelle logikker}
-		\item{Feltet i dag (State of the art), nevne eksisterende verktøy, DEMO og SmcDEL, påpeke at ingenting for GAL (enda)}
-		\item{Hva kan jeg bidra med?}
-		\begin{itemize}
-			\item{Ingen modellsjekkere for GAL}
-			\item{Pedagogisk vinkling, verdi av grafisk verktøy i undervisningskontekst}
-			\item{Eksisterende verkøy har dårlige brukergrensesnitt, krever ekspertkompetanse for å ta i bruk, stort forbedringspotensiale}
-			\item{Forenkle læringsprosessen gjennom å visualisere abstrakte konsepter på en intuitiv måte}
-		\end{itemize}
-		
-	\end{itemize}
-	
+	\item{A background section dedicated to introducing the reader to the field of dynamic epistemic logic and Group Announcement Logic as well as presenting most of the various definitions that will be used in the following sections}
+	\item{The next section will contain the theoretical work presented in this paper, where we discuss the semantics of group announcement logic and will explore their definitions in order to rework them into definitions that are more easily translatable into algorithms we can use in our model checker}
+	\item{We will then translate these definitions into algorithms presented through pseudocode in another section, discussing any differences from the logical semantics and their definitions}
+	\item{After this, we will present the bulk of our work in the form of a fully-functional graphical model checking tool for GAL, that also doubles as a teaching aid. Here we will present its various features and our rationales for implementing them}
+	\item{Once we have finished our high-level introduction and presentation of our tool, we will then transition into a more in-depth discussion of how the features from the previous section were implemented, as well as our choices of technologies and libraries and which advantages and disadvantages they brought}
+	\item{Finally, we will recap with a discussion of our results, our experiences during development and what potential future work could be done to improve our tool further}
 \end{itemize}
 
+%Group announcement logic, like many other forms of epistemic logic revolve around the notion of so-called `possible worlds' and agents which may or may not be able to distinguish between them. When working with these possible worlds, we usually refer to them as states in some system we are trying to simulate. We describe which agents are able to distinguish between these states based on an accessibility relation for each agent, consisting of pairs of states they are unable to differentiate. Since we are solely working with epistemic models in this thesis, also known as S5 models, these accessibility relations will also be equivalence relations (meaning they are reflexive, symmetric and transitive), and we will from here on also refer to them as such.
+%
+%These simulations are then grouped into models consisting of a set of possible worlds or states, a set of equivalence relations for each agent we wish to model, as well as a set of boolean propositions which may or may not hold in a given state. Based on this set of possible worlds and these accessibility relations between them we can model what each agent in our system knows by defining knowledge as being 
 
+
+%Before we delve deeper into the logics and semantics this thesis will be working with, we would like to discuss what makes model checking so useful. 
+%Having briefly touched upon what model checking is, it is time to discuss why model checking is needed and what makes it so useful. 
+
+%Model checking is a general problem not just within knowledge representation and artificial intelligence, but also in other fields of computer science such as formal verification of communication protocols and software correctness.
+%\begin{itemize}
+%	\item{A model, capable of modeling something we are interested in. This could be virtually anything from our previously mentioned flight schedules, databases or more formal models as used in game theory or the Kripke structures we will be using in this thesis.}
+%	\item{A language capable of formulating queries or propositions in regards to these models. Examples here includes natural language, more formal query languages such as SQL or various logics such as Public Announcement Logic or Computation Tree Logic.}
+%	\item{A mechanism which can answer these queries in some fashion. One such mechanism would be the travel planner from our previous example, the tools that execute our SQL, or in our case, the semantics behind our logic and it's satisfaction relation. }
+%\end{itemize}
+%	
+%
+%\todo{
+%\\* Discuss different approaches towards coalitional ability in dynamic epistemic logic, mention coalitional logics like ATL?
+%\\* Discuss educational benefits from usage of model checker, visualization of semantics behind operators
+%\\* Discuss scope of implementation, not suitable for research work, but potentially useful in educational setting
+%}
+
+%JFLAP: 
+%Started as a set of tools at Rensselaer Polytechnic Institute around 1990, moved to Duke University in 1994
+%The creators of JFLAP describe it as "a package of graphical tools which can be used as an aid in learning the basic concepts of Formal Languages and Automata Theory."
+%JFLAP introduces the concept of turing machines which can be rather abstract for a fledgeling student to grasp
+%While we previously mentioned economists using game theory to analyze decision making in various business scenarios, there is also a long tradition in computer science of using model checking to formally verify that hardware and software meets certain requirements. While these formal verification methods often require major investments in time and resources, they still have their place in high-risk contexts, where the cost of failure is particularly high, or human lives are at stake. 
+%
+%While the concept of model checking is most frequently associated with logic, if we examine it in an everyday context, aspects of other fields such as game theory in relation to economics or .
+%
+% most tasks around us involve aspects of this in one way or another. 
+%Examined in an everyday context, the concept of model checking is all around us, frequently used 
+%	
+%	\begin{itemize}
+%		\item{I en dagligdags kontekst brukes til alt mulig, mer enn bare logikk, økonomi, spillteori, forhandlinger pluss mer}
+%		\item{Diskutere i mer abstrakt kontekst, glidende overgang fra lister av flyavganger og reiseplanleggere (Kan svare på spørsmål om 'finnes det et ledig fly fra Bergen til Oslo den 16?', til mer strukturerte systemer som databaser, med spørrespråk som SQL hvor vi kan utforme våre spørringer, til faktisk logikk.}
+%		\item{Logikere flest vil nok alikevel ikke anerkjenne reiseplanleggere (Momondo) som reelle modellsjekkere}
+%	\end{itemize}
+%	
+%As such, we would argue that there exists a `sliding scale' of formality in regards to model checking ranging from lists of plane departures and trip planners, which can be used to answer questions along the lines of `is there a direct flight between Bergen and Oslo departing on the 16th?', to more structured systems such as databases 
+%
+%However, as most logicians probably would not recognize trip planners such as Momondo or [Insert tool here] as proper model checking tools, we would like to present a somewhat loose and abstract definition of model checking and model checkers. For us, a model checker consists of the following three main components:
+%
+%	\item{Består av tre komponenter}
+%	\begin{itemize}
+%		\item{En modell som kan beskrive noe vi er interessert i (Database, tabell med flyavganger, logiske strukturer, Kripke)}
+%		\item{Et språk som kan formulere spørringer eller påstander om denne modellen (SQL, naturlig språk, GAL)}
+%		\item{En mekanisme som kan besvare spørringene, semantikk, relasjon (Momondo, databaseverktøy, semantikk + tilfredsstillelsesrelasjon, ($\models$)})
+%	\end{itemize}
+%	
+%	\item{For hensyns skyld så er det imidlertid lurt å begrense diskusjonen til mer formelle systemer som kan brukes til noe praktisk}
 %"Information is communicated, so knowledge and belief are by no means static. Not surprisingly, many logicians have taken this into account. In the context of epistemic logic, there are many different approaches. Dynamic epistemic logic is an umbrella term for a number of extensions of epistemic logic with dynamic operators that enable us to formalize reasoning about information change. It came forth from developments in formal linguistics, computer science, and philosophical logic."\cite{Ditmarsch2007}
 
 
@@ -101,23 +122,3 @@ While simpler logics such as Computation Tree Logic (CTL) and something somethin
 
 
 %Epistemic logic is a breanch of logic focused on reasoning around knowledge. More specifically on reasoning around the knowledge of agents in our systems. These systems 
-
-The logic this thesis will be working with, group announcement logic, is also one of these extensions of epistemic logic, but in addition to reasoning around information change also allows us to reason around what coalitions of agents are able to achieve through making public announcements in unison based on how they can change the information available to other agents in the system. Group announcement logic, like many other forms of epistemic logic revolve around the notion of so-called `possible worlds' and agents which may or may not be able to distinguish between them. When working with these possible worlds, we usually refer to them as states in some system we are trying to simulate. We describe which agents are able to distinguish between these states based on an accessibility relation for each agent, consisting of pairs of states they are unable to differentiate. Since we are solely working with epistemic models in this thesis, also known as S5 models, these accessibility relations will also be equivalence relations (meaning they are reflexive, symmetric and transitive), and we will from here on also refer to them as such.
-
-These simulations are then grouped into models consisting of a set of possible worlds or states, a set of equivalence relations for each agent we wish to model, as well as a set of boolean propositions which may or may not hold in a given state. Based on this set of possible worlds and these accessibility relations between them we can model what each agent in our system knows by defining knowledge as being 
-
-
-\subsection{Model checking}
-
-Model checking refers to the act of checking whether or not a formula holds in a given model. A simple example of model checking might be to check if its always true that Alice knows whether or not it is raining outside in the context of some model. A more interesting example could be to check whether or not there exists a sequence of actions that can be taken which might make a distributed system deadlock. Model checking is a general problem not just within knowledge representation and artificial intelligence, but also in other fields of computer science such as formal verification of communication protocols and software correctness.
-
-With model checking utilities being such useful tools for exploring the properties of more complex models, it should come as no wonder that there exists plenty of model checkers out there for various forms of logic. Most traditional model checkers however focus on answering simple yes or no questions in regards to whether something is true or not. One of the closest examples of this is DEMO\_S5 for dynamic epistemic logic (DEL), being a command-line application that lets the user types in their formulas and check it against models formatted as long strings of text. We aim to create a tool which can assist users in understanding how these systems work by providing a graphical editor that can visualize both the models themselves as well as the checking process.
-
-
-%Mention Tarski's World as example of educational software\\
-%Mention DEMO and SMCDEL as examples of model checkers in epistemic logic.\\
-%Highlight DEMO's usability problem, shitty UI\\
-%Explain how \cname{} will attempt to improve this\\
-
-%We will introduce a model checking tool 
-%\todo{Mention Fitch, DEMO, SMCDEL++ and compare in terms of usability and goal}

@@ -1,4 +1,4 @@
-\documentclass[11pt,a4paper]{article}
+\documentclass[12pt,a4paper]{article}
 \usepackage[all]{xy}
 \usepackage{amsmath, amssymb}
 \usepackage{algorithm, algorithmicx, algpseudocode}
@@ -22,7 +22,7 @@
 }
 \graphicspath{{./Pics/}}
 \numberwithin{figure}{section}
-\bibliographystyle{plain}
+
 
 %\usepackage[rightcaption]{sidecap}
 %\usepackage{float}
@@ -58,11 +58,17 @@
 \newtheorem{example}[thm]{Example}
 \newtheorem{fig}{Figure}[section]
 
+
+%Fra https://github.com/ogrim/uib-latex/blob/master/uib-latex.tex
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
+
+%-----------------------------------------
+
 \begin{document}
 
 \input{Frontpage} \newpage
 \input{Preface} \newpage
-\input{Chapter_1_Introduction} \newpage
+%\input{Chapter_1_Introduction} \newpage
 \input{Chapter_2_Background} \newpage
 \input{Chapter_3_Group_Announcement_Logic} \newpage
 \input{Chapter_4_Finite_representation} \newpage
