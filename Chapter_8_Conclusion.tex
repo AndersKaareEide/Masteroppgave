@@ -5,7 +5,7 @@
 %There were also plans for separately visualizing the set of announcements a coalition can make as well as showing what the updated models would look like, but unfortunately this had to be scrapped due to time constraints.
 
 
-\todo{Skrive om å måle pedagogisk verdi, muligens peke ut som fremtidlig masteroppgave}
+%\todo{Skrive om å måle pedagogisk verdi, muligens peke ut som fremtidlig masteroppgave}
 
 Having developed what we consider to be a potentially highly useful education tool, the big elephant in the room when discussing future work is actually measuring its educational benefit. As both user testing and educational impact studies go beyond the scope of this thesis, we certainly hope that someone might be willing to take up the torch and prove the value of \cname{} in such settings. While \cname{} is fully functional and usable as an educational aid in its current state, there are also a fair few features that we simply did not have time to implement, a few of which we will discuss.
 
@@ -14,7 +14,3 @@ One of the simpler additions to the tool is implementing the dual, also known as
 There are also a fair few additions to the UI we would have liked to implement, such as separately displaying the set of formula extensions a coalition can announce or provide the user with more informative error messages when attempting to parse syntactically incorrect formulas. Visualizing these formula extensions should also not prove all too challenging as the extensions are already generated when checking formulas. Similarly, the ANTLR parsers provide most of the context necessary to present inform the user of which part of their string caused an error, although more complex reasoning around how to parse ambiguous structures in regards to how to handle missing parentheses and the like might be more challenging. 
 
 There were also plans for generalizing \cname{}'s model serializer in order for to be able to export the models as formats beyond its current basic binary format such as GEXF\footnote{\url{https://gephi.org/gexf/format/}} in order to be able to view these models in other tools such as Gephi\footnote{\url{https://gephi.org/}}. As the intended users of the tool are mainly students attempting to gain a better understanding of the semantics of the operators and structures in group announcement logic however, the feature was eventually scrapped as the models created would likely not be all that interesting to visualize in external tools anyway and the work involved would be fairly substantial for a feature that would probably go unused by most users.  Continuing on model serialization, we would also have liked to be able to store additional information or metadata about each model, such as being able to write notes about interesting properties a model might have or formulas that highlight said properties when checked against these models. 
-
-
-
-Conclusion pending

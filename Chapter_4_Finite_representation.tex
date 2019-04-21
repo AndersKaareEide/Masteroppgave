@@ -223,14 +223,12 @@ Building on the previous algorithm, the next step is using it to create an algor
 				\EndFor
 			\EndFor
 			\State $CS \gets States \ \setminus \ (keys \ in \ bisimMap)$
-			\State $CE \gets \{ e \in Edges ~|~ e.state1 \not\in CS \ and \ e.state2 \not\in CS\}$
+			\State $CE \gets \{ e \in Edges ~|~ e.state1 \in CS \ and \ e.state2 \in CS\}$
 			\State $contractedModel \gets (CS, Agents, CE)$
 			\State \Return $contractedModel$
 		\EndFunction
 	\end{algorithmic}
 \end{algorithm}
-
-\question{Burde ikke filteret i CE 'flippes'? Altså at $startState(e) \in CS$?}
 
 \subsection{Enumerating the set of announceable extensions}
 
@@ -289,7 +287,7 @@ Now that we have not only our bisimulation contracted model, but also a way to g
 
 Like we previously mentioned we here make sure the set of states passed to $bisimContract$ starts with the actual state we're checking our formula in, in order to simplify the visualization of our checking process. It should also be mentioned that the $check$ function that gets called is implemented as an abstract function overridden by each operator in our system and that Algorithm \ref{alg:checkGroupAnn} only shows the implementation for the group announcement operator. The $constrainMdlBy$ function used here is merely a special case of updating a model through announcing the set of states directly instead of announcing a formula and constraining our model to the set of states that satisfy the given formula. 
 
-\todo{Show algorithms for checking conjunctions, knowledge and public announcements}
+%\todo{Show algorithms for checking conjunctions, knowledge and public announcements}
 
 Now that we have presented our algorithm for checking group announcements, we will additionally present our checking algorithms for a few of the simpler operators as well. Starting out, we present Algorithm \ref{alg:checkConj} for checking conjunctions. As all of the non-epistemic operators can be checked in similar fashion with only minor tweaks to the algorithm, we will be skipping the rest of them and instead move on to the knowledge operator. 
 
@@ -326,17 +324,19 @@ Algorithm \ref{alg:checkKnowledge} describes how we check knowledge in our model
 	\end{algorithmic}
 \end{algorithm}
 
-Finally, we also present Algorithm \ref{alg:checkPubAnn} for checking public announcements, which also serves to highlight a few interesting deviations 
-\todo{Skrive ferdig}
+Finally, we also present Algorithm \ref{alg:checkPubAnn} for checking public announcements. Note that we also check if the announcement is truthful and immediately return true if this is not the case as false announcements would lead to contradictions per the semantics of public announcements.
 
 \begin{algorithm}
 	\caption{Check function for public announcements}
 	\label{alg:checkPubAnn}
 	\begin{algorithmic}
 		\Function{$check_{[\varphi]\psi}$}{$state, announcement, innerForm, model$}
+		\If {!\Call {$check$} {$state, announcement, model$}}
+			\State \Return $true$
+		\EndIf
 		\State $updStates \gets List <State>$
-		\ForAll {$state$ in $model.states$}
-			\If {\Call {$check$}{$state, innerForm, model$}}
+		\ForAll {$currState$ in $model.states$}
+			\If {\Call {$check$}{$currState, announcement, model$}}
 				\State $updStates.add(state)$
 			\EndIf
 		\EndFor
@@ -351,7 +351,3 @@ Finally, we also present Algorithm \ref{alg:checkPubAnn} for checking public ann
 		\EndFunction
 	\end{algorithmic}
 \end{algorithm}
-
-\question{Bruke $List<Foo>$ eller $Foo[~]$? Evt hva med $Map<State, State>$?}
-
-Note that we can also check if $state \not\in updStates$ and immediately return true if this is the case.

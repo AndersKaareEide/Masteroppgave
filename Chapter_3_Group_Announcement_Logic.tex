@@ -1,12 +1,10 @@
 \section{Group Announcement Logic}\label{sec:theory}
 
-In this section we will introduce and discuss the various concepts and features of epistemic logic, starting by formally defining and explaining the most central concepts we will be working with. We will then present the language of Group Announcement Logic and aim to give the reader an understanding of the semantics behind, before we transition into our own theoretical work on exploring exploring its group announcement operator in the next chapter. This will lay the foundations for our implementation of the model checking tool that will be presented in the second half of this thesis.
-
-\todo{Flette sammen med kapittel 2 etter det er skrevet}
+In this section we will introduce and discuss the various concepts and features of epistemic logic, starting by formally defining and explaining the most central concepts we will be working with. We will then present the language of Group Announcement Logic and aim to give the reader an understanding of the semantics behind it, before we transition into our own theoretical work on exploring its group announcement operator in the next chapter. This will lay the foundations for our implementation of the model checking tool that will be presented in the second half of this thesis.
 
 \subsection{Models}
 
-In the previous chapter we briefly mentioned the concept of epistemic models. These models are Kripke structures consisting of states, or `possible worlds' and agents which may or may not be able to distinguish them. Which states our agents are incapable of distinguishing is represented by an equivalence relation consisting of pairs of states this agent is unable to tell apart and a function from each agent in our model, to that individual agent's equivalence relation. These models also contain a set of boolean propositions, typically describing properties which may or may not hold in each state, as well as a valuation function which for each proposition in our model, returns the set of states where the given proposition holds.
+In our introduction we briefly mentioned the concept of Kripke structures and epistemic models. These models are structures consisting of states, typically representing `possible worlds' and agents which may or may not be able to distinguish them. Which states our agents are incapable of distinguishing is represented by an equivalence relation consisting of pairs of states this agent is unable to tell apart and a function from each agent in our model, to that individual agent's equivalence relation. These models also contain a set of boolean propositions, typically describing properties which may or may not hold in each state, as well as a valuation function, which for each proposition in our model, returns the set of states where the given proposition holds.
 
 Throughout the rest of this thesis, we will refer to these models by the following definition: 
 
@@ -14,14 +12,14 @@ Throughout the rest of this thesis, we will refer to these models by the followi
 	Given a group of agents $\ags$, and a set of propositions $\props$, a model M is a structure \model{} , where
 	\begin{itemize}
 		\item $\states$ is a set of states
-		\item $\rels$ is a function from every agent $a \in \ags$ to $a$'s equivalence relation $\rels_a \subseteq \states\times\states$
+		\item $\rels$ is a function from every agent $a \in \ags$ to $a$'s equivalence relation, denoted $\rels_a$, such that $\rels_a \subseteq \states\times\states$
 		\item $\vals(p)$ is a valuation function that for every proposition $p \in \props$ returns the set of states where $p$ is true
 	\end{itemize}
 \end{definition}
 
 We will also frequently use $\rels$ as $s\rels_a t$, for some $a\in\ags$ to denote that agent $a$ is unable to distinguish between states $s$ and $t$. When we wish to highlight specific states in a model we will denote this by writing $(M,s)$ to specify that we are referring to state $s$ in the model $M$, commonly known as a pointed model. This is the form that we will use when we are discussing the properties of a state $s$ in the context of some model $M$. 
 
-A simple practical example of an epistemic model could be to imagine someone that doesn't know whether or not it is raining outside. If we focus solely on whether or not it is in fact raining outside, we can denote this proposition as $p$, where $p = $``It is raining outside". Since this agent, $a$ does not know whether it is raining, this means that in their mind there must be at least two possible worlds, or states; one where $p$ is true, and one where $p$ is false which $a$ is unable to distinguish. If we label these states as $s_0$ and $s_1$, we end up with the model shown in Figure \ref{fig:basicEM}, where we use $\neg p$ to signify that $p$ is not true in $(M,s_1)$
+A simple practical example of an epistemic model could be to imagine someone that doesn't know whether or not it is raining outside. If we focus solely on whether or not it is in fact raining outside, we can denote this proposition as $p$, where $p = $``It is raining outside". Since this agent, $a$ does not know whether it is raining, this means that in their mind there must exist at least two possible worlds, or states; one where $p$ is true, and one where $p$ is false which they are unable to distinguish. If we label these states as $s_0$ and $s_1$, we end up with the model shown in Figure \ref{fig:basicEM}, where we use $\neg p$ to signify that $p$ is not true in $(M,s_1)$
 
 \begin{figure}[h]
 	\centering
@@ -46,20 +44,16 @@ Continuing with the model shown in Figure \ref{fig:basicEM}, we might want to ex
 
 In general however, we want to build more complex formulas to check against our models than simple propositions, and for this we need connectives; and logics that define their semantics.
 
-\todo{Flytte intro av $\models$ opp hit}
-
 \begin{definition}[Group Announcement Logic] \hfill
 	\label{def:GAL}
  	\begin{align*}
 		\varphi ::= p \ | ~\neg\varphi ~|~ (\varphi~\wedge~\psi) ~|~ (\varphi~\vee~\psi) ~|~ \varphi 							
 		\rightarrow \psi ~|~ K_a\varphi ~|~ [\varphi]\psi  ~|~ [G]\varphi
 	\end{align*}
-	where $p$ is a proposition such that $p \in P$, $a$ is an agent (i.e. $a \in A$) and $G$ is a set of agents (i.e. $G \subseteq A$).
+	where $p$ is a proposition such that $p \in P$, $a$ is an agent (i.e. $a \in A$) and $G$ is a set of agents such that $G \subseteq A$.
 \end{definition}
 
-Definition \ref{def:GAL} defines the language of \lang{GAL}. It inductively specifies in BNF-notation how each operator in the language can be used to create new formulas. This notation however merely specifies the \textit{syntax} of the language, which ways we are allowed to arrange the symbols. In order to specify what each operator does, we also need semantics, which we will add through the satisfaction relation, $\models$. 
-
-When some pointed model $(M,s)$ is not in the satisfaction relation with some formula $\varphi$, we write $(M,s)\not\models\varphi$.
+Definition \ref{def:GAL} defines the language of \lang{GAL}. It inductively specifies in BNF-notation how each operator in the language can be used to create new formulas. This notation however merely specifies the \textit{syntax} of the language, which ways we are allowed to arrange the symbols. In order to specify what each operator does, we also need semantics, which we will add through the satisfaction relation, $\models$. When some pointed model $(M,s)$ is not in the satisfaction relation with some formula $\varphi$ (i.e, $\varphi$ does not hold in $(\M,s)$), we write $(M,s)\not\models\varphi$.
 
 \begin{definition}[GAL Semantics] \hfill
 	\label{def:GALsem}
@@ -96,7 +90,7 @@ In Definition \ref{def:GALsem} we use the notation $\M|\varphi,s$ to denote $\M$
 
 Informally, Definition \ref{def:modupdate} can be read as filtering out all states in $\M$ which do not satisfy $\varphi$ and then constraining the equivalence relations for each agent as well as the valuation function to that filtered set of states.
 
-The final and most interesting operator in \lang{GAL} is the group announcement operator, denoted $[G]\varphi$. In $[G]\varphi$, $G$ is some coalition of agents such that $G \subseteq \ags$. $\M,s \models [G]\varphi$ expresses that there is no way for the group $G$ to announce anything that can make $\varphi$ false in $\M,s$. Note however that the formulas the agents in $[G]$ can announce are constrained to basic epistemic formulas, or to \lang{el} as defined in Definition \ref{def:langel} in order to avoid making our definition of group announcements circular. The definition of satisfaction of the group announcement connective reduces to a quantified public announcement (note that this is a different connective with only superficial similarity). Is is defined as the statement that the conjuntion of all sets of formulas $\{\varphi_i:i\in G\}$ may be announced without making $\varphi$ true in the current state. More intuitively, that $G$ is unable to make $\varphi$ come about.
+The final and most interesting operator in \lang{GAL} is the group announcement operator, denoted $[G]\varphi$. In $[G]\varphi$, $G$ is some coalition of agents such that $G \subseteq \ags$. $\M,s \models [G]\varphi$ expresses that there is no way for the group $G$ to announce anything that can make $\varphi$ false in $\M,s$. Note however that the formulas the agents in $[G]$ can announce are constrained to basic epistemic formulas, or to \lang{el} as defined in Definition \ref{def:langel} in order to avoid making the definition of group announcements circular. The definition of satisfaction of the group announcement connective reduces to a quantified public announcement (note that this is a different connective with only superficial similarity). Is is defined as the statement that the conjuntion of all sets of formulas $\{\varphi_i:i\in G\}$ may be announced without making $\varphi$ true in the current state. More intuitively, that $G$ is unable to make $\varphi$ come about.
 
 The syntax of $\{\psi_i: i\in G\}[\bigwedge_{i\in G}K_i\psi_i]\varphi$ intuitively means `the conjunction of all formulas $K_i\psi_i$ such that each agent $i$ knows their formula $\psi_i$ and that after this conjunction is announced, $\varphi$ is true'. As the definition in Definition \ref{def:GALsem} specifies that this has to hold for \textit{every} set of $\{\psi_i : i\in G\}$ however, it might be easier to think of it as there not existing a set such that $\M,s \not\models [\bigwedge_{i\in G}K_i\psi_i]\varphi$ or that $G$ does \textit{not} have the ability to prevent $\varphi$ from coming true.
 
@@ -152,8 +146,7 @@ Somewhat related to equivalence classes, we will also be using the concept of fo
 \subsection{Bisimulation}
 
 Sometimes we may want to express that two models are `the same', i.e. they satisfy exactly the same set of formulas, despite possibly being structurally different. For this, we have the concept of bisimilarity, denoted by $\M \leftrightarroweq M'$. Briefly explained, two models $\M$ and $\M'$ are bisimilar iff for any formula $\varphi$ it holds that $\M,s\models\varphi \Leftrightarrow \M',s'\models\varphi$, regardless of $\M$ and $M'$'s structures. 
-\question{Holder ikke denne begge veier?}
-$(\M,s) \leftrightarroweq (\M',s') \Rightarrow \M,s\models\varphi \Leftrightarrow \M',s'\models\varphi$
+%$(\M,s) \leftrightarroweq (\M',s') \Rightarrow \M,s\models\varphi \Leftrightarrow \M',s'\models\varphi$
 
 As bisimilarity will be quite central to our exploration of the semantics of the group announcement operator in the next chapter, we introduce the definition of bisimilarity as follows in Definition \ref{def:bisim}
 

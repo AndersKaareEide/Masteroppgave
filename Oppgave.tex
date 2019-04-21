@@ -12,6 +12,7 @@
 \usepackage{booktabs}
 \usepackage[toc]{appendix}
 \usetikzlibrary{arrows, automata, positioning}
+\usepackage{geometry} %For specifying page margins on title page
 %\usepackage[natbibapa]{apacite}
 
 %Settings
@@ -58,16 +59,26 @@
 \newtheorem{example}[thm]{Example}
 \newtheorem{fig}{Figure}[section]
 
+%Blank pages
+\def\blankpage{%
+      \clearpage%
+      \thispagestyle{empty}%
+      \addtocounter{page}{-1}%
+      \null%
+      \clearpage}
 
 %Fra https://github.com/ogrim/uib-latex/blob/master/uib-latex.tex
-\newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
+%\newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
 
 %-----------------------------------------
 
 \begin{document}
 
-\input{Frontpage} \newpage
+\input{Frontpage} \newpage 
 \input{Preface} \newpage
+
+\tableofcontents \newpage
+
 %\input{Chapter_1_Introduction} \newpage
 \input{Chapter_2_Background} \newpage
 \input{Chapter_3_Group_Announcement_Logic} \newpage
@@ -79,11 +90,11 @@
 
 \newpage
 
-\begin{appendices}
-
-\input{Appendix_A_List_of_features} \newpage
-
-\end{appendices}
+%\begin{appendices}
+%
+%\input{Appendix_A_List_of_features} \newpage
+%
+%\end{appendices}
 
 \bibliographystyle{plain}
 \bibliography{library}

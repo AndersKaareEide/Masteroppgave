@@ -98,9 +98,8 @@ Group Announcement &  $[\{ann,bob\}]\varphi$  & $[Ann,Bob]\varphi$ \\ \bottomrul
 %Checking formulas, visualize which states in our model satisfy the given formula
 %Mention interactive formula display with subformulas
 
-When the user finishes typing in their formula, the tool checks their formula against each state in their model and colors each state based on whether or not the user's formula is satisfied in that state. However, in addition to translating the user's input into a legal formula and showing which states of the model satisfy the formula, \cname{} also lets the user hover over parts of their original formula in order to check the valuation of its subformulas, which can be seen in Figure \ref{fig:labelHover}. The idea here was that by allowing the user to quickly break formulas apart and see how their various subformulas change the valuation of their containing formula the way they do, I could visualize the semantics behind each operator in our language in a manner that might make the logic more enjoyable to learn. 
+When the user finishes typing in their formula, the tool checks their formula against each state in their model and colors each state based on whether or not the user's formula is satisfied in that state. However, in addition to translating the user's input into a legal formula and showing which states of the model satisfy the formula, \cname{} also lets the user hover over parts of their original formula in order to check the valuation of its subformulas, which can be seen in Figure \ref{fig:labelHover} (Note the mouse cursor over the `clouds' proposition). The idea here was that by allowing the user to quickly break formulas apart and see how their various subformulas change the valuation of their containing formula, I could visualize the semantics behind each operator in our language in a manner that might make the logic more enjoyable to learn. 
 
-\todo{replace image with one that shows mouse pointer}
 \begin{figure}[H]
 	\includegraphics[width= \textwidth]{LabelMouseOver.png}
 	\caption{Illustration of mousing over interactive formula display}	
@@ -152,7 +151,7 @@ Now that I have presented most of the tool I have created and how it solves the 
 	\label{fig:basicGalChecking}
 \end{figure}
 
-\todo{Flette inn med resten av det over}
+%\todo{Flette inn med resten av det over}
 
 As the tool provides a view of the model and keeps track of what the model it is currently checking against looks like, it can also visualize the effects of announcing multiple different formulas. This means the tool can also visualize the result of constraining the model to the various formula extensions a coalition can announce, which is what is being displayed in Figure \ref{fig:basicGalChecking}. In this example, we are checking whether the formula $\neg [Bob]\neg K_{Ann}[p]$ holds in state s3 of our model. The formula roughly translates to: `It is not the case that Bob is unable to make Ann know $p$' or more simply in its dual form: `Bob is able to make Ann know p'. From the visualization of our model in Figure \ref{fig:basicGalChecking} we can see that since Bob is able to reduce the model to only states where $p$ holds, Ann also trivially knows that $p$ holds in this updated model, satisfying our original formula. In this somewhat trivial example, the tool ended up only having to try announcing a single formula extension before it found an extension that made our original formula true. If we were to check a more complex formula however, it might end up checking many different announcements, each generating a different updated model after its announcement which the tool will helpfully visualize, giving the user insight into a coalition's capabilities. Note that the previous example could also have been made easier by rewriting the formula as $\dia{Bob}K_{Ann}[p]$, but unfortunately the tool does not (yet) support diamond operators. 
 
